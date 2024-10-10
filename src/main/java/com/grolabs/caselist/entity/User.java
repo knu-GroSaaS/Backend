@@ -22,4 +22,8 @@ public class User {
     private UserType usertype;
     @CreationTimestamp
     private Timestamp createTime;
+
+    public String getUsertype(){
+        return "abc";
+    }
 }
