@@ -1,5 +1,6 @@
 package com.grolabs.caselist.entity;
 
+import com.grolabs.caselist.entity.enums.UserType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,7 +19,7 @@ public class User {
     private String username;
     private String password;
     private String email;
-    private String usertype;
+    private UserType usertype;
     @CreationTimestamp
     private Timestamp createTime;
 }
