@@ -2,25 +2,28 @@ package com.grolabs.caselist.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
-import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+
+import java.util.Arrays;
 
 @Configuration
-@EnableWebSecurity//스프링 시큐리티 필터가 스프링 시큐리티 필터체인에 등록이 됨
-@EnableMethodSecurity(securedEnabled = true, prePostEnabled = true)//secure 어노테이션 활성화, preAuthorize 어노테이션 활성화
+@EnableWebSecurity
+@EnableMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SecurityConfig {
 
-    //해당 메서드의 리턴되는 오브젝트를 IoC로 등록해준다.
     @Bean
-    public BCryptPasswordEncoder encodedPwd(){
+    public BCryptPasswordEncoder encodedPwd() {
         return new BCryptPasswordEncoder();
     }
 
@@ -28,16 +31,41 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/user/**").authenticated() // /user라는 url로 들어오면 인증이 필요하다.//인증만 되면 들어갈 수 있는 주소
-                        .requestMatchers("/manager/**").hasRole("MANAGER") // manager으로 들어오는 MANAGER 인증 또는 ADMIN인증이 필요하다는 뜻이다.
-                        .anyRequest().permitAll() // 그리고 나머지 url은 전부 권한을 허용해준다.
+                        .requestMatchers("/user/**").authenticated()
+                        .requestMatchers("/manager/**").hasRole("MANAGER")
+                        .anyRequest().permitAll()
+                )
+                .formLogin(form -> form
+                        .loginProcessingUrl("/login")
+                        .successHandler((request, response, authentication) -> {
+                            response.setContentType("application/json");
+                            response.getWriter().write("{\"success\": true, \"message\": \"로그인 성공\"}");
+                        })
+                        .failureHandler((request, response, exception) -> {
+                            response.setContentType("application/json");
+                            response.getWriter().write("{\"success\": false, \"message\": \"아이디 또는 비밀번호가 잘못되었습니다\"}");
+                        })
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
                 );
 
-        http.formLogin(form -> form
-                .loginPage("/login")//인증이 필요하면 loginform페이지로 이동
-                .loginProcessingUrl("/login")// /login 주소가 호출이 되면 시큐리티가 낚아채서 대신 로그인을 진행해줌
-                .defaultSuccessUrl("/"));// login이 완료되면 /로 이동
-
         return http.build();
+    }
+
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.addAllowedOrigin("http://localhost:5173");
+        config.addAllowedOrigin("http://155.230.34.239"); // 클라이언트의 출처를 정확히 설정
+        config.addAllowedHeader("*"); // 모든 헤더 허용
+        config.addAllowedMethod("*"); // 모든 메서드 허용
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
     }
 }
