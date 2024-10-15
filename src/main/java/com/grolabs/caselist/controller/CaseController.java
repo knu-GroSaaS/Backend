@@ -36,7 +36,6 @@ public class CaseController {
      */
     @GetMapping
     public List<Case> getAllCases() {
-
         return caseService.getAllCases();
     }
 
