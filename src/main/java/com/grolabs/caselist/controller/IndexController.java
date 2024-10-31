@@ -24,10 +24,6 @@ public class IndexController {
 
     private final PasswordEncoder passwordEncoder;
 
-    @GetMapping("/index")
-    public String index() {
-        return "index";
-    }
 
 //    @GetMapping("/loginok")
 //    public ResponseEntity<String> login() {
@@ -46,14 +42,18 @@ public class IndexController {
 //        return ResponseEntity.ok("loginSuccess");
 //    }
 
-    @GetMapping("/joinForm")
-    public String joinForm() {
-        return "joinForm";
-    }
 
     @PostMapping("/join")
     public ResponseEntity<Void> join(JoinDto joinDto) {
         System.out.println(joinDto);
+
+        boolean emailCheck = userRepository.existsByEmail(joinDto.getEmail());
+        boolean nameCheck = userRepository.existsByUsername(joinDto.getUsername());
+
+        if (emailCheck || nameCheck){
+            throw new IllegalArgumentException("중복된 아이디 및 이메일이 존재합니다.");
+        }
+
         User user = new User();
         user.setUsername(joinDto.getUsername());
         user.setPassword(passwordEncoder.encode(joinDto.getPassword()));
