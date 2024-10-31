@@ -34,7 +34,6 @@ public class PrincipalDetails implements UserDetails {
             }
         });
         return collect;
-
     }
 
     @Override
