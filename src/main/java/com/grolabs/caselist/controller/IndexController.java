@@ -29,6 +29,14 @@ public class IndexController {
         if (session.getAttribute("SPRING_SECURITY_CONTEXT") != null) {
             return "redirect:/";
         }//login 되어있을시 "/"로 redirect
+
+//        boolean isUsernameTaken = userRepository.existsByUsername(user.getUsername());
+//        boolean isEmailTaken = userRepository.existsByEmail(user.getEmail());
+//
+//        if (isEmailTaken || isUsernameTaken){
+//            throw new IllegalArgumentException("이미 존재하는 이메일이나 아이디 입니다.");
+//        }
+
         return "loginForm";
     }
 
