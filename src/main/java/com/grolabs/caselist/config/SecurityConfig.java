@@ -2,6 +2,7 @@ package com.grolabs.caselist.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -29,7 +30,9 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
+        http
+                .cors(Customizer.withDefaults())
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/user/**").authenticated()
                         .requestMatchers("/manager/**").hasRole("MANAGER")
@@ -40,10 +43,14 @@ public class SecurityConfig {
                         .successHandler((request, response, authentication) -> {
                             response.setContentType("application/json");
                             response.getWriter().write("{\"success\": true, \"message\": \"로그인 성공\"}");
+                            response.setStatus(200);
+                            response.getWriter().flush();
                         })
                         .failureHandler((request, response, exception) -> {
                             response.setContentType("application/json");
                             response.getWriter().write("{\"success\": false, \"message\": \"아이디 또는 비밀번호가 잘못되었습니다\"}");
+                            response.setStatus(401);
+                            response.getWriter().flush();
                         })
                 )
                 .logout(logout -> logout
@@ -52,7 +59,7 @@ public class SecurityConfig {
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                 );
-
+      
         return http.build();
     }
 
