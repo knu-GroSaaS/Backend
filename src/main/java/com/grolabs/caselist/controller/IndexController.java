@@ -25,35 +25,35 @@ public class IndexController {
     private final PasswordEncoder passwordEncoder;
 
 
-//    @GetMapping("/loginok")
-//    public ResponseEntity<String> login() {
-////        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-////        String name = authentication.getName();
-////        String authorities = authentication.getAuthorities().toString();
-////
-////
-////        System.out.println("로그인한 유저 id:" + name);
-////        System.out.println("유저 권한:" + authentication.getAuthorities());
-////
-////        Map<String, String> userInfo = new HashMap<>();
-////        userInfo.put("username", name);
-////        userInfo.put("authorities", authorities);
-//
-//        return ResponseEntity.ok("loginSuccess");
-//    }
+    @PostMapping("/join/dupli")
+    public ResponseEntity<String> checkDuplicate(
+            @RequestParam String type,//username or email
+            @RequestParam String value//
+    ) {
+        if (value.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body(type.equals("username") ? "아이디를 입력해 주세요" : "이메일을 입력해 주세요");
+        }
+
+        boolean exists;
+        if ("username".equals(type)) {
+            exists = userRepository.existsByUsername(value);
+        } else if ("email".equals(type)) {
+            exists = userRepository.existsByEmail(value);
+        } else {
+            return ResponseEntity.badRequest().body("유효하지 않은 요청입니다");
+        }
+
+        if (exists) {
+            return ResponseEntity.badRequest().body("중복된 " + type + "가 존재합니다");
+        }
+
+        return ResponseEntity.ok().build();
+    }
 
 
     @PostMapping("/join")
     public ResponseEntity<Void> join(JoinDto joinDto) {
         System.out.println(joinDto);
-
-        boolean emailCheck = userRepository.existsByEmail(joinDto.getEmail());
-        boolean nameCheck = userRepository.existsByUsername(joinDto.getUsername());
-
-        if (emailCheck || nameCheck){
-            throw new IllegalArgumentException("중복된 아이디 및 이메일이 존재합니다.");
-        }
-
         User user = new User();
         user.setUsername(joinDto.getUsername());
         user.setPassword(passwordEncoder.encode(joinDto.getPassword()));
@@ -61,10 +61,5 @@ public class IndexController {
         userRepository.save(user);
         return ResponseEntity.ok().build();
     }
-//
-//    @GetMapping("/joinForm")
-//    public String joinForm() {
-//        return "joinForm";
-//    }
 
 }
