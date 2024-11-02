@@ -17,12 +17,12 @@ public class UserController {
     private final UserService userService;
     private final UserRepository userRepository;
 
-    @PutMapping("/user/Authority")
+    @PutMapping("/manager/Authority")
     public void updateUserAuthority(@RequestBody UserAuthorityDto userAuthorityDto){
        userService.updateUserAuthority(userAuthorityDto);
     }
 
-    @GetMapping("/user")
+    @GetMapping("/manager")
     public List<User> getAllUser(){
         return userRepository.findAll();
     }
