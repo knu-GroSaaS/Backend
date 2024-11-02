@@ -9,4 +9,8 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     //findBy규칙 -> Username문법
     //select * from user where username = ? (<-username)
     public User findByUsername(String username);
+
+    boolean existsByUsername(String username);
+    boolean existsByEmail(String email);
+
 }
