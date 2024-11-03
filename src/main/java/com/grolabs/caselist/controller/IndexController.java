@@ -31,7 +31,7 @@ public class IndexController {
             @RequestParam String value//
     ) {
         if (value.trim().isEmpty()) {
-            return ResponseEntity.ok(false);
+            return ResponseEntity.badRequest().body(false);
         }
 
         boolean exists;
@@ -40,7 +40,7 @@ public class IndexController {
         } else if ("email".equals(type)) {
             exists = userRepository.existsByEmail(value);
         } else {
-            return ResponseEntity.ok(false);
+            return ResponseEntity.badRequest().body(false);
         }
 
         // 중복이 없을 경우 true, 중복이 있을 경우 false 반환
