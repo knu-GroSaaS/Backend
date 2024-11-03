@@ -55,9 +55,14 @@ public class SecurityConfig {
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            response.setContentType("application/json");
+                            response.setStatus(200); // 상태 코드 200 설정
+                            response.getWriter().write("{\"success\": true, \"message\": \"로그아웃 성공\"}");
+                            response.getWriter().flush();
+                        })
                 );
       
         return http.build();
