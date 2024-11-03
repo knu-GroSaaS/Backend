@@ -26,12 +26,12 @@ public class IndexController {
 
 
     @PostMapping("/join/dupli")
-    public ResponseEntity<String> checkDuplicate(
+    public ResponseEntity<Boolean> checkDuplicate(
             @RequestParam String type,//username or email
             @RequestParam String value//
     ) {
         if (value.trim().isEmpty()) {
-            return ResponseEntity.badRequest().body(type.equals("username") ? "아이디를 입력해 주세요" : "이메일을 입력해 주세요");
+            return ResponseEntity.ok(false);
         }
 
         boolean exists;
@@ -40,14 +40,11 @@ public class IndexController {
         } else if ("email".equals(type)) {
             exists = userRepository.existsByEmail(value);
         } else {
-            return ResponseEntity.badRequest().body("유효하지 않은 요청입니다");
+            return ResponseEntity.ok(false);
         }
 
-        if (exists) {
-            return ResponseEntity.badRequest().body("중복된 " + type + "가 존재합니다");
-        }
-
-        return ResponseEntity.ok().build();
+        // 중복이 없을 경우 true, 중복이 있을 경우 false 반환
+        return ResponseEntity.ok(!exists);
     }
 
 
