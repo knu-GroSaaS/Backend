@@ -85,4 +85,15 @@ public class CaseController {
 
         return caseService.deleteCase(caseId);
     }
+
+    /**
+     * Search Case
+     * @param keyWord Search from case-list with keyword
+     * @return Cases List
+     */
+    @GetMapping("/search")
+    public List<Case> searchCase(@RequestBody String keyWord) {
+
+        return caseService.searchCase(keyWord);
+    }
 }
