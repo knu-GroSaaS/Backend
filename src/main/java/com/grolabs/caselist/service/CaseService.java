@@ -9,10 +9,12 @@ import com.grolabs.caselist.dto.CaseUpdateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -121,5 +123,28 @@ public class CaseService {
         caseRepository.delete(currentCase);
 
         return "Case Deleted Successfully";
+    }
+
+
+    /**
+     * Search Case
+     * @param keyWord Search from case-list with keyword
+     * @return Cases List
+     */
+    public List<Case> searchCase(@RequestBody String keyWord) {
+
+        List<Case> cases = caseRepository.findAll();
+
+        return cases.stream()
+                .filter(c->containsKeywordInFields(c, keyWord))
+                .collect(Collectors.toList());
+    }
+
+    private boolean containsKeywordInFields(Case c, String keyword) {
+        // 필드에 해당 키워드가 포함되어 있는지 검사
+        return (c.getProduct() != null && c.getProduct().contains(keyword)) ||
+                (c.getDescription() != null && c.getDescription().contains(keyword)) ||
+                (c.getVersion() != null && c.getVersion().contains(keyword)) ||
+                (c.getSubject() != null && c.getSubject().contains(keyword));
     }
 }
