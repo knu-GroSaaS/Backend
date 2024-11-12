@@ -20,4 +20,6 @@ public class User {
     private String usertype;
     @CreationTimestamp
     private Timestamp createTime;
+    private String phone;
+    private String resellerCompany;
 }
