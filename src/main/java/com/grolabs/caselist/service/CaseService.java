@@ -2,6 +2,7 @@ package com.grolabs.caselist.service;
 
 import com.grolabs.caselist.dto.CaseStatusUpdateDto;
 import com.grolabs.caselist.entity.Case;
+import com.grolabs.caselist.entity.User;
 import com.grolabs.caselist.entity.enums.CaseStatus;
 import com.grolabs.caselist.repository.CaseRepository;
 import com.grolabs.caselist.dto.CaseCreateDto;
@@ -30,6 +31,7 @@ public class CaseService {
      * @return String
      */
     public String createCase(CaseCreateDto requestDto) {
+
         Case aCase = new Case(requestDto);
 
         caseRepository.save(aCase);
@@ -73,8 +75,8 @@ public class CaseService {
         if (requestDto.getVersion() != null) {
             currentCase.setVersion(requestDto.getVersion());
         }
-        if (requestDto.getSubject() != null) {
-            currentCase.setSubject(requestDto.getSubject());
+        if (requestDto.getProblemTitle() != null) {
+            currentCase.setProblemTitle(requestDto.getProblemTitle());
         }
         if (requestDto.getDescription() != null) {
             currentCase.setDescription(requestDto.getDescription());
@@ -145,6 +147,6 @@ public class CaseService {
         return (c.getProduct() != null && c.getProduct().contains(keyword)) ||
                 (c.getDescription() != null && c.getDescription().contains(keyword)) ||
                 (c.getVersion() != null && c.getVersion().contains(keyword)) ||
-                (c.getSubject() != null && c.getSubject().contains(keyword));
+                (c.getProblemTitle() != null && c.getProblemTitle().contains(keyword));
     }
 }

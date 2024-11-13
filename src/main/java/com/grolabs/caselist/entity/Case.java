@@ -22,14 +22,20 @@ public class Case {
     @Column(name = "case_id")
     private Long caseId;
 
+    @Column(name = "problemTitle", nullable = false)
+    private String problemTitle;
+
     @Column(name = "product", nullable = false)
     private String product;
 
     @Column(name = "version", nullable = false)
     private String version;
 
-    @Column(name = "subject", nullable = false)
-    private String subject;
+    @Column(name = "serialNumber", nullable = false)
+    private String serialNumber;
+
+    @Column(name = "severity", nullable = false)
+    private String severity;
 
     @Column(name = "description", nullable = false)
     private String description;
@@ -59,9 +65,11 @@ public class Case {
     }
 
     public Case(CaseCreateDto requestDto) {
+        this.problemTitle = requestDto.getProblemTitle();
         this.product = requestDto.getProduct();
         this.version = requestDto.getVersion();
-        this.subject = requestDto.getSubject();
+        this.serialNumber = requestDto.getSerialNumber();
+        this.severity = requestDto.getSeverity();
         this.description = requestDto.getDescription();
         this.userId = requestDto.getUserId();
         this.caseStatus = NOT_STARTED;
