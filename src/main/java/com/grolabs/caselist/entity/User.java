@@ -20,4 +20,8 @@ public class User {
     private String usertype;
     @CreationTimestamp
     private Timestamp createTime;
+
+    public void updateType(String Type){
+        this.usertype = Type;
+    }
 }
