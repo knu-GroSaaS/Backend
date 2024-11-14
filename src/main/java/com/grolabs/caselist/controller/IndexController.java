@@ -20,9 +20,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class IndexController {
 
-    private final UserRepository userRepository;
-
-    private final PasswordEncoder passwordEncoder;
+    private final JoinService joinService;
 
 
     @PostMapping("/join/dupli")
@@ -33,29 +31,15 @@ public class IndexController {
         if (value.trim().isEmpty()) {
             return ResponseEntity.badRequest().body(false);
         }
-
-        boolean exists;
-        if ("username".equals(type)) {
-            exists = userRepository.existsByUsername(value);
-        } else if ("email".equals(type)) {
-            exists = userRepository.existsByEmail(value);
-        } else {
-            return ResponseEntity.badRequest().body(false);
-        }
-
         // 중복이 없을 경우 true, 중복이 있을 경우 false 반환
-        return ResponseEntity.ok(!exists);
+        boolean exists = joinService.checkDuplication(type, value);
+        return ResponseEntity.ok(exists);
     }
 
 
     @PostMapping("/join")
     public ResponseEntity<Void> join(JoinDto joinDto) {
-        System.out.println(joinDto);
-        User user = new User();
-        user.setUsername(joinDto.getUsername());
-        user.setPassword(passwordEncoder.encode(joinDto.getPassword()));
-        user.setEmail(joinDto.getEmail());
-        userRepository.save(user);
+        joinService.joinUser(joinDto);
         return ResponseEntity.ok().build();
     }
 
