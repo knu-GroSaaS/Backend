@@ -32,8 +32,7 @@ public class IndexController {
             return ResponseEntity.badRequest().body(false);
         }
         // 중복이 없을 경우 true, 중복이 있을 경우 false 반환
-        boolean exists = joinService.checkDuplication(type, value);
-        return ResponseEntity.ok(exists);
+        return ResponseEntity.ok(joinService.checkDuplication(type, value));
     }
 
 

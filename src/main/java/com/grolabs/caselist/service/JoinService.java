@@ -23,6 +23,8 @@ public class JoinService {
         user.setUsername(joinDto.getUsername());
         user.setPassword(passwordEncoder.encode(joinDto.getPassword()));
         user.setEmail(joinDto.getEmail());
+        user.setPhoneNum(joinDto.getPhoneNum());
+        user.setSite(joinDto.getSite());
         userRepository.save(user);
     }
 
