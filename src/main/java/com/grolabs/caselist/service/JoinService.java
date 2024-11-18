@@ -3,6 +3,7 @@ package com.grolabs.caselist.service;
 
 import com.grolabs.caselist.dto.JoinDto;
 import com.grolabs.caselist.entity.User;
+import com.grolabs.caselist.entity.enums.UserStatus;
 import com.grolabs.caselist.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +22,11 @@ public class JoinService {
         System.out.println(joinDto);
         User user = new User();
         user.setUsername(joinDto.getUsername());
-        user.setPassword(passwordEncoder.encode(joinDto.getPassword()));
+        user.setPassword(passwordEncoder.encode(joinDto.getUsername()));//Username과 동일한 값
         user.setEmail(joinDto.getEmail());
         user.setPhoneNum(joinDto.getPhoneNum());
         user.setSite(joinDto.getSite());
+        user.setStatus(UserStatus.INACTIVE);
         userRepository.save(user);
     }
 
