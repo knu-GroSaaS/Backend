@@ -49,7 +49,7 @@ public class IndexController {
 
 
     @PostMapping("/join")
-    public ResponseEntity<Void> join(JoinDto joinDto) {
+    public ResponseEntity<Void> join(@RequestBody JoinDto joinDto) {
         System.out.println(joinDto);
         User user = new User();
         user.setUsername(joinDto.getUsername());

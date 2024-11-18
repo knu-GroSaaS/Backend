@@ -1,12 +1,16 @@
 package com.grolabs.caselist.config;
 
+import com.grolabs.caselist.jwt.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
@@ -20,7 +24,7 @@ import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(securedEnabled = true, prePostEnabled = true)
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Bean
@@ -28,41 +32,25 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean // authenticationManager를 IoC에 등록해줌.
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
         http
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(sc -> sc.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션을 사용하지 않음
+                .formLogin(AbstractHttpConfigurer::disable)//Form login 사용 x
+                .httpBasic(AbstractHttpConfigurer::disable)//비활성화
+                .addFilter(new JwtAuthenticationFilter(authenticationManager))//AuthenticationManager argument
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/user/**").authenticated()
+                        .requestMatchers("/user/**").hasRole("USER")
                         .requestMatchers("/manager/**").hasRole("MANAGER")
                         .anyRequest().permitAll()
-                )
-                .formLogin(form -> form
-                        .loginProcessingUrl("/login")
-                        .successHandler((request, response, authentication) -> {
-                            response.setContentType("application/json");
-                            response.getWriter().write("{\"success\": true, \"message\": \"로그인 성공\"}");
-                            response.setStatus(200);
-                            response.getWriter().flush();
-                        })
-                        .failureHandler((request, response, exception) -> {
-                            response.setContentType("application/json");
-                            response.getWriter().write("{\"success\": false, \"message\": \"아이디 또는 비밀번호가 잘못되었습니다\"}");
-                            response.setStatus(401);
-                            response.getWriter().flush();
-                        })
-                )
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
-                        .logoutSuccessHandler((request, response, authentication) -> {
-                            response.setContentType("application/json");
-                            response.setStatus(200); // 상태 코드 200 설정
-                            response.getWriter().write("{\"success\": true, \"message\": \"로그아웃 성공\"}");
-                            response.getWriter().flush();
-                        })
+
                 );
       
         return http.build();
