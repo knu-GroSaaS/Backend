@@ -1,6 +1,7 @@
 package com.grolabs.caselist.jwt;
 
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -37,8 +38,19 @@ public class JWTUtil {
     }
 
     public Boolean isExpired(String token){
-        // 만료됐는지 확인
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
+//        // 만료됐는지 확인
+//        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
+        try {
+            // JWT 파싱 및 만료 시간 확인
+            return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
+        } catch (ExpiredJwtException e) {
+            // 토큰이 만료된 경우 true 반환
+            return true;
+        } catch (Exception e) {
+            // 기타 예외 발생 시도 만료로 간주
+            System.out.println("Error parsing token: " + e.getMessage());
+            return true;
+        }
     }
 
     public String createJwt(String category, String username, String userType, Long expirdMs){

@@ -63,7 +63,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String role = auth.getAuthority();
 
         //토큰 생성
-        String access = jwtUtil.createJwt("access", username, role, 600000L);
+        String access = jwtUtil.createJwt("access", username, role, 6L);
         String refresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
         response.setContentType("application/json"); // JSON 응답임을 명시
         response.setCharacterEncoding("UTF-8"); // UTF-8 설정
@@ -87,15 +87,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setStatus(401);
     }
 
-    private Cookie createCookie(String key, String value) {
-
-        Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(24*60*60);
-        //cookie.setSecure(true) -> https통신할 때
-        //cookie.setPath("/") -> 적용될 범위 설정 가능
-        cookie.setHttpOnly(true); // 클라이언트단에서 쿠키에 접근하지 못하도록 막아야함
-
-        return cookie;
-    }
+//    private Cookie createCookie(String key, String value) {
+//
+//        Cookie cookie = new Cookie(key, value);
+//        cookie.setMaxAge(24*60*60);
+//        //cookie.setSecure(true) -> https통신할 때
+//        //cookie.setPath("/") -> 적용될 범위 설정 가능
+//        cookie.setHttpOnly(true); // 클라이언트단에서 쿠키에 접근하지 못하도록 막아야함
+//
+//        return cookie;
+//    }
 
 }
