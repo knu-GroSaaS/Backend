@@ -37,27 +37,17 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        // 1. usename, password get
-        User user;
-        ObjectMapper mapper = new ObjectMapper(); // json data parsing
-        try {
-            user = mapper.readValue(request.getInputStream(),User.class);
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
+        //클라이언트 요청에서 username, password 추출
+        String username = obtainUsername(request);
+        String password = obtainPassword(request);
 
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()); // token
+        //스프링 시큐리티에서 username과 password를 검증하기 위해서는 token에 담아야 함
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
 
-            // 2. login try
-            Authentication auth = authenticationManager.authenticate(authenticationToken); // princialDetailsService call
+        //토큰에 담은 검증을 위한 매니저로 전달
+        return authenticationManager.authenticate(authToken);
 
-            // 3. PrincipalDetails을 세션에 담음(인가 관리를 위해)
-            PrincipalDetails principalDetails = (PrincipalDetails) auth.getPrincipal();
-            System.out.println("login success");
-
-            return auth;
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override

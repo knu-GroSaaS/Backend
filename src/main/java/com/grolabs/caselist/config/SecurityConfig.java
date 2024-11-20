@@ -58,6 +58,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/user/**").hasRole("USER")
                         .requestMatchers("/manager/**").hasRole("ADMIN")
+                        .requestMatchers("/reissue").permitAll()
                         .anyRequest().permitAll()
 
                 );
