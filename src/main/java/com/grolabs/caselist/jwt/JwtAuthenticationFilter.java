@@ -20,7 +20,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 
 /**spring security에 UsernamePasswordAuthenticationFilter가 있음
@@ -65,20 +67,28 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // 유저 정보
         String username = authResult.getName();
 
-
         Collection<? extends GrantedAuthority> authorities = authResult.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
-        String usertype = auth.getAuthority();
+        String role = auth.getAuthority();
 
         //토큰 생성
-        String access = jwtUtil.createJwt("access", username, usertype, 600000L);
-        String refresh = jwtUtil.createJwt("refresh", username, usertype, 86400000L);
+        String access = jwtUtil.createJwt("access", username, role, 600000L);
+        String refresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
+        response.setContentType("application/json"); // JSON 응답임을 명시
+        response.setCharacterEncoding("UTF-8"); // UTF-8 설정
 
-        //응답 설정
-        response.setHeader("access", access);
-        response.addCookie(createCookie("refresh", refresh));
-        response.setStatus(HttpStatus.OK.value());
+        // JSON 데이터를 담을 Map 생성
+        Map<String, String> tokenMap = new HashMap<>();
+        tokenMap.put("access", access);
+        tokenMap.put("refresh", refresh);
+
+        // JSON 직렬화
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonResponse = objectMapper.writeValueAsString(tokenMap);
+
+        // 응답 스트림에 JSON 작성
+        response.getWriter().write(jsonResponse);
     }
 
     @Override
