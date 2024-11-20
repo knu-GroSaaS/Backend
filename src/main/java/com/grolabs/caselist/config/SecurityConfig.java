@@ -1,5 +1,6 @@
 package com.grolabs.caselist.config;
 
+import com.grolabs.caselist.jwt.JWTUtil;
 import com.grolabs.caselist.jwt.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +14,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -27,6 +29,11 @@ import java.util.Arrays;
 @EnableMethodSecurity
 public class SecurityConfig {
 
+    private final JWTUtil jwtUtil;
+
+    public SecurityConfig(JWTUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
     @Bean
     public BCryptPasswordEncoder encodedPwd() {
         return new BCryptPasswordEncoder();
@@ -45,13 +52,16 @@ public class SecurityConfig {
                 .sessionManagement(sc -> sc.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션을 사용하지 않음
                 .formLogin(AbstractHttpConfigurer::disable)//Form login 사용 x
                 .httpBasic(AbstractHttpConfigurer::disable)//비활성화
-                .addFilter(new JwtAuthenticationFilter(authenticationManager))//AuthenticationManager argument
+                .addFilterAt(new JwtAuthenticationFilter(authenticationManager, jwtUtil), UsernamePasswordAuthenticationFilter.class)//AuthenticationManager argument
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/user/**").hasRole("USER")
-                        .requestMatchers("/manager/**").hasRole("MANAGER")
+                        .requestMatchers("/manager/**").hasRole("ADMIN")
                         .anyRequest().permitAll()
 
                 );
+
+        http
+                .httpBasic((auth) -> auth.disable());
       
         return http.build();
     }
