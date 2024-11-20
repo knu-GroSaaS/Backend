@@ -9,6 +9,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -60,23 +61,23 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
 
-        Long EXPIRATION_TIME = 60000*10L;
-        //jwt token 생성 후 response header에 담아 전송
+        // 유저 정보
+        String username = authResult.getName();
 
-        CustomUserDetails customUserDetails = (CustomUserDetails) authResult.getPrincipal();
 
-        String username = customUserDetails.getUsername();
-
-        // 권한 뽑아내는 과정
         Collection<? extends GrantedAuthority> authorities = authResult.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
+        String usertype = auth.getAuthority();
 
-        String role = auth.getAuthority();
+        //토큰 생성
+        String access = jwtUtil.createJwt("access", username, usertype, 600000L);
+        String refresh = jwtUtil.createJwt("refresh", username, usertype, 86400000L);
 
-        String token = jwtUtil.createJwt(username, role, EXPIRATION_TIME);
-        // HTTP 인증 방식 RFC 7235에 따라 인증 헤더는 Bearer라는 형태를 가져야한다.
-        response.addHeader("Authorization", "Bearer " + token);
+        //응답 설정
+        response.setHeader("access", access);
+        response.addCookie(createCookie("refresh", refresh));
+        response.setStatus(HttpStatus.OK.value());
     }
 
     @Override

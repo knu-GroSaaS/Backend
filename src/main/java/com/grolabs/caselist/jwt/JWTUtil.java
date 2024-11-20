@@ -31,15 +31,21 @@ public class JWTUtil {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("usertype", String.class);
     }
 
+    public String getCategory(String token) {
+
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("category", String.class);
+    }
+
     public Boolean isExpired(String token){
         // 만료됐는지 확인
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
     }
 
-    public String createJwt(String username, String userType, Long expirdMs){
+    public String createJwt(String category, String username, String userType, Long expirdMs){
 
         // JWT생성
         return Jwts.builder()
+                .claim("category" ,category)
                 .claim("username", username)
                 .claim("userType", userType)
                 .issuedAt(new Date(System.currentTimeMillis()))
