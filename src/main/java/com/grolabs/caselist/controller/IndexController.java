@@ -2,6 +2,7 @@ package com.grolabs.caselist.controller;
 
 import com.grolabs.caselist.dto.JoinDto;
 import com.grolabs.caselist.entity.User;
+import com.grolabs.caselist.entity.enums.UserStatus;
 import com.grolabs.caselist.repository.UserRepository;
 import com.grolabs.caselist.service.JoinService;
 import jakarta.servlet.http.HttpSession;
@@ -49,12 +50,16 @@ public class IndexController {
 
 
     @PostMapping("/join")
-    public ResponseEntity<Void> join(@RequestBody JoinDto joinDto) {
+    public ResponseEntity<Void> join(JoinDto joinDto) {
         System.out.println(joinDto);
         User user = new User();
         user.setUsername(joinDto.getUsername());
         user.setPassword(passwordEncoder.encode(joinDto.getPassword()));
         user.setEmail(joinDto.getEmail());
+        user.setPhoneNum("010-0000-0000");
+        user.setSite("null");
+        user.setStatus(UserStatus.ACTIVE);
+
         userRepository.save(user);
         return ResponseEntity.ok().build();
     }

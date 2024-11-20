@@ -27,7 +27,7 @@ public class ReissueController {
         this.jwtUtil = jwtUtil;
     }
 
-    @PostMapping("/reissue")
+    @PostMapping("api/auth/refresh")
     public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) throws IOException {
         //get refresh token
         String refresh = request.getHeader("refresh");

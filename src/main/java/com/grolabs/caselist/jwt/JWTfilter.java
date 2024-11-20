@@ -26,8 +26,14 @@ public class JWTfilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
+            String requestURI = request.getRequestURI();
             // request에서 헤더 찾음
             String authorization = request.getHeader("Authorization");
+
+            if (requestURI.startsWith("/swagger-ui") || requestURI.startsWith("/v3/api-docs")) {
+                filterChain.doFilter(request, response);
+                return;
+            }
 
             // 헤더 검증
             if (authorization == null || !authorization.startsWith("Bearer ")) {

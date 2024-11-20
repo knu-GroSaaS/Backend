@@ -26,16 +26,16 @@ public class User {
     @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(nullable = false)
+    @Column
     private String phoneNum;
 
-    @Column(nullable = false)
+    @Column
     private String usertype = UserType.USER.toString();
 
-    @Column(nullable = false)
+    @Column
     private String site;
 
-    @Column(nullable = false)
+    @Column
     private UserStatus status;
 
     @Column(nullable = false)
