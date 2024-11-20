@@ -10,24 +10,29 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CaseCreateDto {
 
+    private String problemTitle;
 
     private String product;
 
     private String version;
 
-    private String subject;
-
     private String description;
+
+    private String serialNumber;
+
+    private String Severity;
 
     private Long userId;
 
 
     public CaseCreateDto(Case aCase) {
         this(
+                aCase.getProblemTitle(),
                 aCase.getProduct(),
                 aCase.getVersion(),
-                aCase.getSubject(),
                 aCase.getDescription(),
+                aCase.getSerialNumber(),
+                aCase.getSeverity(),
                 aCase.getUserId()
         );
     }

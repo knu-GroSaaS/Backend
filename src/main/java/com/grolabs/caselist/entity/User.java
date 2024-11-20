@@ -41,6 +41,7 @@ public class User {
     @Column(nullable = false)
     @CreationTimestamp
     private Timestamp createTime;
+
     @UpdateTimestamp
     private Timestamp updateTime;
 
@@ -62,4 +63,5 @@ public class User {
     public void updateType(String Type){
         this.usertype = Type;
     }
+
 }
