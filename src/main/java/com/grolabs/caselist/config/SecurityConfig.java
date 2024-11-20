@@ -1,6 +1,7 @@
 package com.grolabs.caselist.config;
 
 import com.grolabs.caselist.jwt.JWTUtil;
+import com.grolabs.caselist.jwt.JWTfilter;
 import com.grolabs.caselist.jwt.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -52,6 +53,7 @@ public class SecurityConfig {
                 .sessionManagement(sc -> sc.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션을 사용하지 않음
                 .formLogin(AbstractHttpConfigurer::disable)//Form login 사용 x
                 .httpBasic(AbstractHttpConfigurer::disable)//비활성화
+                .addFilterAfter(new JWTfilter(jwtUtil), JwtAuthenticationFilter.class)
                 .addFilterAt(new JwtAuthenticationFilter(authenticationManager, jwtUtil), UsernamePasswordAuthenticationFilter.class)//AuthenticationManager argument
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/user/**").hasRole("USER")
