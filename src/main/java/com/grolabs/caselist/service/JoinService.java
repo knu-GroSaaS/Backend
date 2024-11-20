@@ -24,8 +24,6 @@ public class JoinService {
         user.setUsername(joinDto.getUsername());
         user.setPassword(passwordEncoder.encode(joinDto.getUsername()));//Username과 동일한 값
         user.setEmail(joinDto.getEmail());
-        user.setPhoneNum(joinDto.getPhoneNum());
-        user.setSite(joinDto.getSite());
         user.setStatus(UserStatus.INACTIVE);
         userRepository.save(user);
     }
