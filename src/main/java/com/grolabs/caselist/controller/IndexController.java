@@ -37,8 +37,13 @@ public class IndexController {
 
 
     @PostMapping("/join")
-    public ResponseEntity<Void> join(JoinDto joinDto) {
-        joinService.joinUser(joinDto);
+    public ResponseEntity<Void> join(@RequestBody JoinDto joinDto) {
+        System.out.println(joinDto);
+        User user = new User();
+        user.setUsername(joinDto.getUsername());
+        user.setPassword(passwordEncoder.encode(joinDto.getPassword()));
+        user.setEmail(joinDto.getEmail());
+        userRepository.save(user);
         return ResponseEntity.ok().build();
     }
 
