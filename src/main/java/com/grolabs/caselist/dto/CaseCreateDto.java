@@ -16,8 +16,6 @@ public class CaseCreateDto {
 
     private String version;
 
-    private String description;
-
     private String serialNumber;
 
     private String Severity;
@@ -30,7 +28,6 @@ public class CaseCreateDto {
                 aCase.getProblemTitle(),
                 aCase.getProduct(),
                 aCase.getVersion(),
-                aCase.getDescription(),
                 aCase.getSerialNumber(),
                 aCase.getSeverity(),
                 aCase.getUserId()

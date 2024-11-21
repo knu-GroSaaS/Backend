@@ -63,8 +63,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String role = auth.getAuthority();
 
         //토큰 생성
-        String access = jwtUtil.createJwt("accessToken", username, role, 6000000L);
-        String refresh = jwtUtil.createJwt("refreshToken", username, role, 86400000L);
+        String access = jwtUtil.createJwt("accessToken", username, role, 36000000L); // 1시간
+        String refresh = jwtUtil.createJwt("refreshToken", username, role, 2592000000L); // 3일
         response.setContentType("application/json"); // JSON 응답임을 명시
         response.setCharacterEncoding("UTF-8"); // UTF-8 설정
 

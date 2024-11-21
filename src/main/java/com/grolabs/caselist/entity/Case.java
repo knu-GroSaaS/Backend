@@ -37,9 +37,6 @@ public class Case {
     @Column(name = "severity", nullable = false)
     private String severity;
 
-    @Column(name = "description", nullable = false)
-    private String description;
-
     @Column(name = "userId", nullable = false)
     private Long userId;
 
@@ -70,7 +67,6 @@ public class Case {
         this.version = requestDto.getVersion();
         this.serialNumber = requestDto.getSerialNumber();
         this.severity = requestDto.getSeverity();
-        this.description = requestDto.getDescription();
         this.userId = requestDto.getUserId();
         this.caseStatus = NOT_STARTED;
         this.createdAt = LocalDateTime.now();

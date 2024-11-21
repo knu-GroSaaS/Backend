@@ -78,8 +78,11 @@ public class CaseService {
         if (requestDto.getProblemTitle() != null) {
             currentCase.setProblemTitle(requestDto.getProblemTitle());
         }
-        if (requestDto.getDescription() != null) {
-            currentCase.setDescription(requestDto.getDescription());
+        if (requestDto.getSerialNumber() != null) {
+            currentCase.setSerialNumber(requestDto.getSerialNumber());
+        }
+        if (requestDto.getSeverity() != null) {
+            currentCase.setSeverity(requestDto.getSeverity());
         }
         if (requestDto.getUserId() != null) {
             currentCase.setUserId(requestDto.getUserId());
@@ -145,7 +148,6 @@ public class CaseService {
     private boolean containsKeywordInFields(Case c, String keyword) {
         // 필드에 해당 키워드가 포함되어 있는지 검사
         return (c.getProduct() != null && c.getProduct().contains(keyword)) ||
-                (c.getDescription() != null && c.getDescription().contains(keyword)) ||
                 (c.getVersion() != null && c.getVersion().contains(keyword)) ||
                 (c.getProblemTitle() != null && c.getProblemTitle().contains(keyword));
     }

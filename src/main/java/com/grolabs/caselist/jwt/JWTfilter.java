@@ -37,9 +37,11 @@ public class JWTfilter extends OncePerRequestFilter {
 
             // 헤더 검증
             if (authorization == null || !authorization.startsWith("Bearer ")) {
-
                 System.out.println("token null");
-                response.setStatus(401);
+                // 임시 처리
+                if (requestURI.startsWith("/api/auth")){
+                    response.setStatus(401);
+                }
                 // 다음 필터로 넘겨주는 작업
                 filterChain.doFilter(request, response);
 
