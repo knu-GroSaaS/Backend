@@ -63,15 +63,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String role = auth.getAuthority();
 
         //토큰 생성
-        String access = jwtUtil.createJwt("access", username, role, 6L);
-        String refresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
+        String access = jwtUtil.createJwt("accessToken", username, role, 6000000L);
+        String refresh = jwtUtil.createJwt("refreshToken", username, role, 86400000L);
         response.setContentType("application/json"); // JSON 응답임을 명시
         response.setCharacterEncoding("UTF-8"); // UTF-8 설정
 
         // JSON 데이터를 담을 Map 생성
         Map<String, String> tokenMap = new HashMap<>();
-        tokenMap.put("access", access);
-        tokenMap.put("refresh", refresh);
+        tokenMap.put("accessToken", access);
+        tokenMap.put("refreshToken", refresh);
 
         // JSON 직렬화
         ObjectMapper objectMapper = new ObjectMapper();
@@ -84,7 +84,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected  void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException faild) {
 
-        response.setStatus(401);
+        response.setStatus(462);
     }
 
 //    private Cookie createCookie(String key, String value) {
