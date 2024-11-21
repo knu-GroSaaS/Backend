@@ -1,6 +1,7 @@
 package com.grolabs.caselist.controller;
 
 import com.grolabs.caselist.dto.JoinDto;
+import com.grolabs.caselist.dto.PasswordEditDto;
 import com.grolabs.caselist.entity.User;
 import com.grolabs.caselist.entity.enums.UserStatus;
 import com.grolabs.caselist.repository.UserRepository;
@@ -41,6 +42,16 @@ public class IndexController {
     public ResponseEntity<Void> join(JoinDto joinDto) {
         joinService.joinUser(joinDto);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/password/update")
+    public ResponseEntity<Void> updatePassword(PasswordEditDto passwordEditDto) {
+        if(joinService.updatePassword(passwordEditDto)) {
+            return ResponseEntity.ok().build();
+        }
+        else{
+            return ResponseEntity.badRequest().build();
+        }
     }
 
 }

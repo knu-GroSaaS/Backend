@@ -2,6 +2,7 @@ package com.grolabs.caselist.service;
 
 
 import com.grolabs.caselist.dto.JoinDto;
+import com.grolabs.caselist.dto.PasswordEditDto;
 import com.grolabs.caselist.entity.User;
 import com.grolabs.caselist.entity.enums.UserStatus;
 import com.grolabs.caselist.repository.UserRepository;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -40,5 +43,23 @@ public class JoinService {
             return false;
         }
         return !exists;
+    }
+
+    public boolean updatePassword(PasswordEditDto passwordEditDto) {
+        User user=userRepository.findByUsername(passwordEditDto.getUsername());
+        if(user==null) {
+            throw new NoSuchElementException("사용자가 존재하지 않습니다.");
+        }
+        //받아온 비밀번호와 저장된 비밀번호가 다를 경우 or 현재 비밀번호와 바꿀 비밀번호가 같을 경우 return false
+        if(!passwordEncoder.matches(passwordEditDto.getCurrentPassword(),user.getPassword())|| passwordEditDto.getNewPassword().equals(passwordEditDto.getCurrentPassword())) {
+            System.out.println("실패");
+            return false;
+        }
+        else{
+            user.setPassword(passwordEncoder.encode(passwordEditDto.getNewPassword()));
+            userRepository.save(user);
+            System.out.println("성공");
+            return true;
+        }
     }
 }
