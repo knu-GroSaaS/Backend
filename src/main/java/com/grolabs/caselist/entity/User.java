@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 
 @Entity
 @Data
@@ -59,6 +60,11 @@ public class User {
         this.emailVerified = true;
         this.emailVerificationToken = null; // 검증 후 토큰 제거
     }
+
+    public void setDeleteTime() {
+        this.deleteTime = Timestamp.from(Instant.now());
+    }
+
 
     public void updateType(String Type){
         this.usertype = Type;
