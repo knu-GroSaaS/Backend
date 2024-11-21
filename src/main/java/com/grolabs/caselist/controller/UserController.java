@@ -3,6 +3,7 @@ package com.grolabs.caselist.controller;
 
 import com.grolabs.caselist.dto.user.UserAddDto;
 import com.grolabs.caselist.dto.user.UserAuthorityDto;
+import com.grolabs.caselist.dto.user.UserDeleteDto;
 import com.grolabs.caselist.entity.User;
 import com.grolabs.caselist.repository.UserRepository;
 import com.grolabs.caselist.service.UserService;
@@ -43,6 +44,21 @@ public class UserController {
     @PostMapping("/manager")
     public ResponseEntity<String> addUser(@RequestBody UserAddDto userAddDto){
         return ResponseEntity.ok(userService.UserCreate(userAddDto));
+    }
+
+    /**
+     * Delete  User
+     * Handles HTTP POST requests to add a new user to the dashboard.
+     *
+     * @param userDeleteDto A DTO containing the following fields:
+     *                   - requestername: The name of the user making the request (e.g., manager).
+     *                   - username: The name of the user to be added to the dashboard.
+     *                   - deletion: The timestamp or identifier for the user creation process.
+     * @return ResponseEntity<String> A response containing a success message.
+     * */
+    @PostMapping("manager/delete")
+    public ResponseEntity<String> deleteUser(@RequestBody UserDeleteDto userDeleteDto){
+        return ResponseEntity.ok(userService.UserDelete(userDeleteDto));
     }
 
 }
