@@ -5,8 +5,10 @@ import com.grolabs.caselist.dto.user.UserAddDto;
 import com.grolabs.caselist.dto.user.UserAuthorityDto;
 import com.grolabs.caselist.entity.User;
 import com.grolabs.caselist.entity.UserCreateHistory;
+import com.grolabs.caselist.repository.UserCreateHistoryRepository;
 import com.grolabs.caselist.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,7 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserService {
 
+    @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserCreateHistoryRepository userCreateHistoryRepository;
 
     @Transactional
     public void updateUserAuthority(UserAuthorityDto userAuthorityDto){
@@ -31,8 +36,10 @@ public class UserService {
     }
 
     public String UserCreate(UserAddDto userAddDto){
+        System.out.println(userAddDto.getRequestername());
         User manager = userRepository.findByUsername(userAddDto.getRequestername());
-        if(manager.getUsertype().equals("MANAGER")){
+        System.out.println(manager.getUsername());
+        if(manager.getUsertype().equals("ROLE_MANAGER")){
             Long managerId = manager.getId();
             String creation = userAddDto.getCreation();
             String username = userAddDto.getUsername();
@@ -45,6 +52,9 @@ public class UserService {
             userCreateHistory.setRequester(managerId);
             userCreateHistory.setUser(user);
             userCreateHistory.setCreation(creation);
+            System.out.println(userCreateHistory);
+            userCreateHistoryRepository.save(userCreateHistory);
+
 
             return "success";
         }

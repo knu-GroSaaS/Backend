@@ -9,6 +9,7 @@ import com.grolabs.caselist.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestClient;
 
 import java.util.List;
 
@@ -29,9 +30,19 @@ public class UserController {
         return userRepository.findAll();
     }
 
+    /**
+    * Add Dashboard User
+    * Handles HTTP POST requests to add a new user to the dashboard.
+    *
+    * @param userAddDto A DTO containing the following fields:
+    *                   - requestername: The name of the user making the request (e.g., manager).
+    *                   - username: The name of the user to be added to the dashboard.
+    *                   - creation: The timestamp or identifier for the user creation process.
+    * @return ResponseEntity<String> A response containing a success message.
+     * */
     @PostMapping("/manager")
-    public String addUser(@RequestBody UserAddDto userAddDto){
-        return userService.UserCreate(userAddDto);
+    public ResponseEntity<String> addUser(@RequestBody UserAddDto userAddDto){
+        return ResponseEntity.ok(userService.UserCreate(userAddDto));
     }
 
 }
