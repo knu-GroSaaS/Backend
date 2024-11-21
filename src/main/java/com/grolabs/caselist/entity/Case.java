@@ -37,9 +37,6 @@ public class Case {
     @Column(name = "severity", nullable = false)
     private String severity;
 
-    @Column(name = "description", nullable = false)
-    private String description;
-
     @Column(name = "userId", nullable = false)
     private Long userId;
 
