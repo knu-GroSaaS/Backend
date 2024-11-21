@@ -4,9 +4,14 @@ package com.grolabs.caselist.service;
 import com.grolabs.caselist.dto.user.UserAddDto;
 import com.grolabs.caselist.dto.user.UserAuthorityDto;
 import com.grolabs.caselist.entity.User;
+
+import com.grolabs.caselist.jwt.JWTUtil;
+
 import com.grolabs.caselist.entity.UserCreateHistory;
 import com.grolabs.caselist.repository.UserCreateHistoryRepository;
+
 import com.grolabs.caselist.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,11 +21,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class UserService {
+    private final UserRepository userRepository;
+
+    private final JWTUtil jwtUtil;
 
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
     private UserCreateHistoryRepository userCreateHistoryRepository;
+
 
     @Transactional
     public void updateUserAuthority(UserAuthorityDto userAuthorityDto){
@@ -33,6 +40,16 @@ public class UserService {
         else{
             throw new IllegalArgumentException("매니저 권한이 아닙니다.");
         }
+    }
+
+
+    public User getUser(HttpServletRequest request){
+        String authorization = request.getHeader("Authorization");
+        String token = authorization.split(" ")[1];
+
+        String username = jwtUtil.getUsername(token);
+
+        return userRepository.findByUsername(username);
     }
 
     public String UserCreate(UserAddDto userAddDto){
@@ -62,6 +79,5 @@ public class UserService {
             return "매니저 권한이 아닙니다.";
         }
     }
-
 
 }
