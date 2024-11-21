@@ -30,7 +30,7 @@ public class User {
     private String phoneNum;
 
     @Column
-    private String usertype = UserType.USER.toString();
+    private String usertype = UserType.ROLE_USER.toString();
 
     @Column
     private String site;

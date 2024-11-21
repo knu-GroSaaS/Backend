@@ -63,6 +63,7 @@ public class JWTfilter extends OncePerRequestFilter {
             String username = jwtUtil.getUsername(token);
             String usertype = jwtUtil.getUsertype(token);
 
+
             User user = new User();
             user.setUsername(username);
             user.setPassword("temppassword");
