@@ -35,6 +35,7 @@ public class UserController {
     @GetMapping("/manager/getuser")
     public User getUser(HttpServletRequest request) {
         return userService.getUser(request);
+    }
     /**
     * Add Dashboard User
     * Handles HTTP POST requests to add a new user to the dashboard.

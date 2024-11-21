@@ -78,9 +78,6 @@ public class CaseService {
         if (requestDto.getProblemTitle() != null) {
             currentCase.setProblemTitle(requestDto.getProblemTitle());
         }
-        if (requestDto.getDescription() != null) {
-            currentCase.setDescription(requestDto.getDescription());
-        }
         if (requestDto.getUserId() != null) {
             currentCase.setUserId(requestDto.getUserId());
         }
