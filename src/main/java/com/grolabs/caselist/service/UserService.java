@@ -1,13 +1,12 @@
 package com.grolabs.caselist.service;
 
 
-import com.grolabs.caselist.dto.user.GetUserDto;
 import com.grolabs.caselist.dto.user.UserAuthorityDto;
 import com.grolabs.caselist.entity.User;
 import com.grolabs.caselist.jwt.JWTUtil;
 import com.grolabs.caselist.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,11 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class UserService {
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private JWTUtil jwtUtil;
+    private final JWTUtil jwtUtil;
 
 
     @Transactional
@@ -35,8 +32,9 @@ public class UserService {
         }
     }
 
-    public User getUser(GetUserDto getUserDto){
-        String token = getUserDto.getToken();
+    public User getUser(HttpServletRequest request){
+        String authorization = request.getHeader("Authorization");
+        String token = authorization.split(" ")[1];
 
         String username = jwtUtil.getUsername(token);
 

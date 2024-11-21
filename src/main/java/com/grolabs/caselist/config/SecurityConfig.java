@@ -57,8 +57,8 @@ public class SecurityConfig {
                 .addFilterAt(new JwtAuthenticationFilter(authenticationManager, jwtUtil), UsernamePasswordAuthenticationFilter.class)//AuthenticationManager argument
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/user/**").hasRole("USER")
-                        .requestMatchers("/manager/**").hasRole("ADMIN")
+                        .requestMatchers("/user/**", "/manager").hasRole("USER")
+                        //.requestMatchers("/manager/**").hasRole("ADMIN")
                         .requestMatchers("/api/auth/refresh").permitAll()
                         .anyRequest().permitAll()
 

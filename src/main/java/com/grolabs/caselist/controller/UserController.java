@@ -1,11 +1,11 @@
 package com.grolabs.caselist.controller;
 
 
-import com.grolabs.caselist.dto.user.GetUserDto;
 import com.grolabs.caselist.dto.user.UserAuthorityDto;
 import com.grolabs.caselist.entity.User;
 import com.grolabs.caselist.repository.UserRepository;
 import com.grolabs.caselist.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,9 +28,9 @@ public class UserController {
         return userRepository.findAll();
     }
 
-    @GetMapping("/user/getuser")
-    public User getUser(GetUserDto getUserDto) {
-        return userService.getUser(getUserDto);
+    @GetMapping("/manager/getuser")
+    public User getUser(HttpServletRequest request) {
+        return userService.getUser(request);
     }
 
 }
