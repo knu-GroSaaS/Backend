@@ -1,11 +1,13 @@
 package com.grolabs.caselist.controller;
 
 
+import com.grolabs.caselist.dto.user.UserAddDto;
 import com.grolabs.caselist.dto.user.UserAuthorityDto;
 import com.grolabs.caselist.entity.User;
 import com.grolabs.caselist.repository.UserRepository;
 import com.grolabs.caselist.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +27,11 @@ public class UserController {
     @GetMapping("/manager")
     public List<User> getAllUser(){
         return userRepository.findAll();
+    }
+
+    @PostMapping("/manager")
+    public String addUser(@RequestBody UserAddDto userAddDto){
+        return userService.UserCreate(userAddDto);
     }
 
 }
