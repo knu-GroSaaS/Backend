@@ -3,11 +3,13 @@ package com.grolabs.caselist.service;
 
 import com.grolabs.caselist.dto.user.UserAddDto;
 import com.grolabs.caselist.dto.user.UserAuthorityDto;
+import com.grolabs.caselist.entity.LoginHistory;
 import com.grolabs.caselist.entity.User;
 
 import com.grolabs.caselist.jwt.JWTUtil;
 
 import com.grolabs.caselist.entity.UserCreateHistory;
+import com.grolabs.caselist.repository.LoginHistoryRepository;
 import com.grolabs.caselist.repository.UserCreateHistoryRepository;
 
 import com.grolabs.caselist.repository.UserRepository;
@@ -17,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -25,8 +29,9 @@ public class UserService {
 
     private final JWTUtil jwtUtil;
 
-    @Autowired
-    private UserCreateHistoryRepository userCreateHistoryRepository;
+    private final LoginHistoryRepository loginHistoryRepository;
+
+    private final UserCreateHistoryRepository userCreateHistoryRepository;
 
 
     @Transactional
@@ -78,6 +83,10 @@ public class UserService {
         else{
             return "매니저 권한이 아닙니다.";
         }
+    }
+
+    public List<LoginHistory> getAllHistory(Long userId){
+        return loginHistoryRepository.findAllByUserId(userId);
     }
 
 }
