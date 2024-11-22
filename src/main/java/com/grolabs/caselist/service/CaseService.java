@@ -136,7 +136,7 @@ public class CaseService {
      * @param keyWord Search from case-list with keyword
      * @return Cases List
      */
-    public List<Case> searchCase(@RequestBody String keyWord) {
+    public List<Case> searchCase(String keyWord) {
 
         List<Case> cases = caseRepository.findAll();
 

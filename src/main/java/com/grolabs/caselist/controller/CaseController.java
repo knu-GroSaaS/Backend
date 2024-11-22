@@ -92,7 +92,7 @@ public class CaseController {
      * @return Cases List
      */
     @GetMapping("/search")
-    public List<Case> searchCase(@RequestBody String keyWord) {
+    public List<Case> searchCase(@RequestParam String keyWord) {
 
         return caseService.searchCase(keyWord);
     }

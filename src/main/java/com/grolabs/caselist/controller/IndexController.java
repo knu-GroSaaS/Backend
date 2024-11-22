@@ -39,7 +39,7 @@ public class IndexController {
 
 
     @PostMapping("/join")
-    public ResponseEntity<Void> join(JoinDto joinDto) {
+    public ResponseEntity<Void> join(JoinDto joinDto) throws CloneNotSupportedException {
         joinService.joinUser(joinDto);
         return ResponseEntity.ok().build();
     }

@@ -21,7 +21,7 @@ public class JoinService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public void joinUser(JoinDto joinDto) {
+    public void joinUser(JoinDto joinDto) throws CloneNotSupportedException {
         System.out.println(joinDto);
         User user = new User();
         user.setUsername(joinDto.getUsername());
@@ -30,7 +30,13 @@ public class JoinService {
         user.setPhoneNum(joinDto.getPhoneNum());
         user.setSite(joinDto.getSite());
         user.setStatus(UserStatus.INACTIVE);
-        userRepository.save(user);
+
+        if(userRepository.existsByUsername(joinDto.getUsername())){
+            throw new CloneNotSupportedException("아이디 중복을 확인해주세요.");
+        }
+        else{
+            userRepository.save(user);
+        }
     }
 
     public boolean checkDuplication(String type, String value) {
@@ -53,7 +59,7 @@ public class JoinService {
         //받아온 비밀번호와 저장된 비밀번호가 다를 경우 or 현재 비밀번호와 바꿀 비밀번호가 같을 경우 return false
         if(!passwordEncoder.matches(passwordEditDto.getCurrentPassword(),user.getPassword())|| passwordEditDto.getNewPassword().equals(passwordEditDto.getCurrentPassword())) {
             System.out.println("실패");
-            return false;
+            throw new IllegalArgumentException("패스워드가 다릅니다");
         }
         else{
             user.setPassword(passwordEncoder.encode(passwordEditDto.getNewPassword()));
