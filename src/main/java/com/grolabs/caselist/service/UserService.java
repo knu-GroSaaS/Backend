@@ -61,7 +61,7 @@ public class UserService {
             String creation = userAddDto.getCreation();
             String username = userAddDto.getUsername();
             if (managerId == null || creation == null || username == null) {
-                return "항목을 모두 작성해 주세요";
+                throw new IllegalArgumentException("항목을 모두 작성해 주세요");
             }
             User user = userRepository.findByUsername(username);
 

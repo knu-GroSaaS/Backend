@@ -24,5 +24,12 @@ public class GlobalExcetionHandler {
                 .body(ex.getMessage());       // 예외 메시지 반환
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return ResponseEntity
+                .status(464) // 463 상태 코드
+                .body(ex.getMessage());       // 예외 메시지 반환
+    }
+
 
 }
