@@ -4,6 +4,7 @@ package com.grolabs.caselist.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.grolabs.caselist.jwt.JWTUtil;
+import com.grolabs.caselist.repository.RefreshEntityRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,8 +25,11 @@ import java.util.Map;
 public class ReissueController {
     private final JWTUtil jwtUtil;
 
-    public ReissueController(JWTUtil jwtUtil) {
+    private final RefreshEntityRepository refreshEntityRepository;
+
+    public ReissueController(JWTUtil jwtUtil, RefreshEntityRepository refreshEntityRepository) {
         this.jwtUtil = jwtUtil;
+        this.refreshEntityRepository = refreshEntityRepository;
     }
 
     @PostMapping("api/auth/refresh")
@@ -54,6 +58,14 @@ public class ReissueController {
         if (!category.equals("refreshToken")) {
 
             //response status code
+            return new ResponseEntity<>("invalid refresh token", HttpStatus.BAD_REQUEST);
+        }
+
+        //DB에 저장되어 있는지 확인
+        Boolean isExist = refreshEntityRepository.existsByRefresh(refresh);
+        if (!isExist) {
+
+            //response body
             return new ResponseEntity<>("invalid refresh token", HttpStatus.BAD_REQUEST);
         }
 
