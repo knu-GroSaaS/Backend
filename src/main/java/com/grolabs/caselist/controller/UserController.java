@@ -3,6 +3,7 @@ package com.grolabs.caselist.controller;
 
 import com.grolabs.caselist.dto.user.UserAddDto;
 import com.grolabs.caselist.dto.user.UserAuthorityDto;
+import com.grolabs.caselist.entity.LoginHistory;
 import com.grolabs.caselist.entity.User;
 import com.grolabs.caselist.repository.UserRepository;
 import com.grolabs.caselist.service.UserService;
@@ -49,6 +50,11 @@ public class UserController {
     @PostMapping("/manager")
     public ResponseEntity<String> addUser(@RequestBody UserAddDto userAddDto){
         return ResponseEntity.ok(userService.UserCreate(userAddDto));
+    }
+
+    @GetMapping("/manager/loghistory/{userId}")
+    public List<LoginHistory> findAllHistory(@PathVariable Long userId){
+        return userService.getAllHistory(userId);
     }
 
 }

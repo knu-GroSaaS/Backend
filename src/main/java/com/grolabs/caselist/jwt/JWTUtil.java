@@ -37,6 +37,10 @@ public class JWTUtil {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("category", String.class);
     }
 
+    public Long getHistory(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("historyId", Long.class);
+    }
+
     public Boolean isExpired(String token){
 //        // 만료됐는지 확인
 //        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
@@ -53,13 +57,14 @@ public class JWTUtil {
         }
     }
 
-    public String createJwt(String category, String username, String userType, Long expirdMs){
+    public String createJwt(String category, String username, String userType, Long historyId, Long expirdMs){
 
         // JWT생성
         return Jwts.builder()
                 .claim("category" ,category)
                 .claim("username", username)
                 .claim("usertype", userType)
+                .claim("historyId", historyId)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expirdMs))
                 .signWith(secretKey)

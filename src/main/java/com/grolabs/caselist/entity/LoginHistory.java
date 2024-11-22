@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Data
 public class LoginHistory {
@@ -18,8 +20,17 @@ public class LoginHistory {
 
     @CreationTimestamp
     @Column(name = "login_time", nullable = false)
-    private String loginTime;
+    private LocalDateTime loginTime;
 
     @Column(name = "logout_time")
-    private String logoutTime;
+    private LocalDateTime logoutTime;
+
+    public LoginHistory(Long userId){
+        this.userId = userId;
+        this.loginTime = LocalDateTime.now();
+    }
+
+    public LoginHistory() {
+
+    }
 }
