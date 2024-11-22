@@ -1,5 +1,6 @@
 package com.grolabs.caselist.config;
 
+import com.grolabs.caselist.jwt.JWTLogoutFilter;
 import com.grolabs.caselist.jwt.JWTUtil;
 import com.grolabs.caselist.jwt.JWTfilter;
 import com.grolabs.caselist.jwt.JwtAuthenticationFilter;
@@ -20,6 +21,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -68,6 +70,7 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)//비활성화
                 .addFilterAfter(new JWTfilter(jwtUtil), JwtAuthenticationFilter.class)
                 .addFilterAt(new JwtAuthenticationFilter(authenticationManager, jwtUtil, loginHistoryRepository, userRepository, refreshEntityRepository), UsernamePasswordAuthenticationFilter.class)//AuthenticationManager argument
+                .addFilterBefore(new JWTLogoutFilter(jwtUtil, refreshEntityRepository), LogoutFilter.class)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/user/**", "/manager").hasRole("USER")
