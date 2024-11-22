@@ -21,7 +21,7 @@ public class JoinService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public void joinUser(JoinDto joinDto) {
+    public void joinUser(JoinDto joinDto) throws CloneNotSupportedException {
         System.out.println(joinDto);
         User user = new User();
         user.setUsername(joinDto.getUsername());
@@ -30,7 +30,13 @@ public class JoinService {
         user.setPhoneNum(joinDto.getPhoneNum());
         user.setSite(joinDto.getSite());
         user.setStatus(UserStatus.INACTIVE);
-        userRepository.save(user);
+
+        if(userRepository.existsByUsername(joinDto.getUsername())){
+            throw new CloneNotSupportedException("아이디 중복을 확인해주세요.");
+        }
+        else{
+            userRepository.save(user);
+        }
     }
 
     public boolean checkDuplication(String type, String value) {
