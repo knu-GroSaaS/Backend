@@ -70,7 +70,7 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)//비활성화
                 .addFilterAfter(new JWTfilter(jwtUtil), JwtAuthenticationFilter.class)
                 .addFilterAt(new JwtAuthenticationFilter(authenticationManager, jwtUtil, loginHistoryRepository, userRepository, refreshEntityRepository), UsernamePasswordAuthenticationFilter.class)//AuthenticationManager argument
-                .addFilterBefore(new JWTLogoutFilter(jwtUtil, refreshEntityRepository), LogoutFilter.class)
+                .addFilterBefore(new JWTLogoutFilter(jwtUtil, refreshEntityRepository, loginHistoryRepository), LogoutFilter.class)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/user/**", "/manager").hasRole("USER")
