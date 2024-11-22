@@ -29,4 +29,8 @@ public class LoginHistory {
         this.userId = userId;
         this.loginTime = LocalDateTime.now();
     }
+
+    public LoginHistory() {
+
+    }
 }
