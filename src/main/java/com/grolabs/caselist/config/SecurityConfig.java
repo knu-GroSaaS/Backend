@@ -3,6 +3,9 @@ package com.grolabs.caselist.config;
 import com.grolabs.caselist.jwt.JWTUtil;
 import com.grolabs.caselist.jwt.JWTfilter;
 import com.grolabs.caselist.jwt.JwtAuthenticationFilter;
+import com.grolabs.caselist.repository.LoginHistoryRepository;
+import com.grolabs.caselist.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -32,8 +35,14 @@ public class SecurityConfig {
 
     private final JWTUtil jwtUtil;
 
-    public SecurityConfig(JWTUtil jwtUtil) {
+    private final LoginHistoryRepository loginHistoryRepository;
+
+    private final UserRepository userRepository;
+
+    public SecurityConfig(JWTUtil jwtUtil, LoginHistoryRepository loginHistoryRepository, UserRepository userRepository) {
         this.jwtUtil = jwtUtil;
+        this.loginHistoryRepository = loginHistoryRepository;
+        this.userRepository = userRepository;
     }
     @Bean
     public BCryptPasswordEncoder encodedPwd() {
@@ -54,7 +63,7 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)//Form login 사용 x
                 .httpBasic(AbstractHttpConfigurer::disable)//비활성화
                 .addFilterAfter(new JWTfilter(jwtUtil), JwtAuthenticationFilter.class)
-                .addFilterAt(new JwtAuthenticationFilter(authenticationManager, jwtUtil), UsernamePasswordAuthenticationFilter.class)//AuthenticationManager argument
+                .addFilterAt(new JwtAuthenticationFilter(authenticationManager, jwtUtil, loginHistoryRepository, userRepository), UsernamePasswordAuthenticationFilter.class)//AuthenticationManager argument
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/user/**", "/manager").hasRole("USER")

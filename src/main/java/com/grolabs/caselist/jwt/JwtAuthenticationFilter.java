@@ -3,7 +3,10 @@ package com.grolabs.caselist.jwt;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.grolabs.caselist.auth.PrincipalDetails;
 import com.grolabs.caselist.dto.user.CustomUserDetails;
+import com.grolabs.caselist.entity.LoginHistory;
 import com.grolabs.caselist.entity.User;
+import com.grolabs.caselist.repository.LoginHistoryRepository;
+import com.grolabs.caselist.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -34,6 +37,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
+    private final LoginHistoryRepository loginHistoryRepository;
+    private final UserRepository userRepository;
 
 
     @Override
@@ -76,6 +81,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // JSON 직렬화
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonResponse = objectMapper.writeValueAsString(tokenMap);
+
+        //로그인 기록 작성
+        LoginHistory loginHistory = new LoginHistory(userRepository
+                .findByUsername(username)
+                .getId());
+
+        loginHistoryRepository.save(loginHistory);
 
         // 응답 스트림에 JSON 작성
         response.getWriter().write(jsonResponse);
