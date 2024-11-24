@@ -9,6 +9,8 @@ import com.grolabs.caselist.repository.UserRepository;
 import com.grolabs.caselist.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClient;
@@ -52,9 +54,21 @@ public class UserController {
         return ResponseEntity.ok(userService.UserCreate(userAddDto));
     }
 
-    @GetMapping("/manager/loghistory/{userId}")
-    public List<LoginHistory> findAllHistory(@PathVariable Long userId){
-        return userService.getAllHistory(userId);
+    /**
+     * Find loginHistory User
+     * Handles HTTP POST requests to find user history in DB.
+     *
+     * @param accessToken in Header
+     * @return List<LoginHistory>
+     */
+    @GetMapping("/user/loghistory")
+    public List<LoginHistory> findHistory(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken){
+        return userService.findHistory(accessToken);
+    }
+
+    @GetMapping("/manager/loghistory")
+    public List<LoginHistory> findAllHistory(){
+        return userService.findAllHistory();
     }
 
 }
