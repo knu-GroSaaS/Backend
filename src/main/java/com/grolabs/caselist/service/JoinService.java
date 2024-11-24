@@ -65,6 +65,7 @@ public class JoinService {
         }
         else{
             user.setPassword(passwordEncoder.encode(passwordEditDto.getNewPassword()));
+            user.setPasswordUpdateTime(LocalDateTime.now());
             userRepository.save(user);
             System.out.println("성공");
             return true;
