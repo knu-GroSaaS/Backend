@@ -15,6 +15,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,6 +25,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
+import java.security.Timestamp;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.*;
 
 
@@ -57,7 +62,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
 
         // 유저 정보
         String username = authResult.getName();
@@ -67,10 +71,14 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
 
+        User user = userRepository.findByUsername(username);
         //로그인 기록 작성
-        LoginHistory loginHistory = new LoginHistory(userRepository
-                .findByUsername(username));
-
+        LoginHistory loginHistory = new LoginHistory(user);
+        // 비밀번호 바꾼 주기 확인
+        if (shouldRequestPasswordChange(user.getPasswordUpdateTime())){
+            response.setContentType("application/json");
+            response.getWriter().write("{\"message\": \"비밀번호를 변경한지 오래되었습니다. 새 비밀번호를 설정해주세요.\"}");
+        }
         loginHistoryRepository.save(loginHistory);
 
         //토큰 생성
@@ -113,6 +121,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         refreshEntity.setExpiration(date.toString());
 
         refreshEntityRepository.save(refreshEntity);
+    }
+
+    public boolean shouldRequestPasswordChange(LocalDateTime passwordUpdateTime) {
+        // 현재 시간
+        LocalDateTime now = LocalDateTime.now();
+
+        // 1분이 지났는지 확인
+        Duration duration = Duration.between(passwordUpdateTime, now);
+        return duration.toMinutes() >= 1; // 1분 이상 경과 여부
     }
 
 //    private Cookie createCookie(String key, String value) {

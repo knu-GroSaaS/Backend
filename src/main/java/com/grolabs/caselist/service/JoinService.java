@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
 @Service
@@ -30,6 +31,7 @@ public class JoinService {
         user.setPhoneNum(joinDto.getPhoneNum());
         user.setSite(joinDto.getSite());
         user.setStatus(UserStatus.INACTIVE);
+        user.setPasswordUpdateTime(LocalDateTime.now());
 
         if(userRepository.existsByUsername(joinDto.getUsername())){
             throw new CloneNotSupportedException("아이디 중복을 확인해주세요.");
