@@ -91,7 +91,7 @@ public class UserService {
             }
 
             //사용자 생성테이블에서 삭제
-            UserCreateHistory userCreateHistory = userCreateHistoryRepository.findByUsername(user.getUsername());
+            UserCreateHistory userCreateHistory = userCreateHistoryRepository.findByUserUsername(user.getUsername());
             if(userCreateHistory==null){
                 throw new NoSuchElementException(USER_NOT_FOUND);
             }
@@ -107,6 +107,7 @@ public class UserService {
             UserDeleteHistory userDeleteHistory = new UserDeleteHistory();
             userDeleteHistory.setRequester(manager.getId());
             userDeleteHistory.setUser(user);
+            userDeleteHistory.setDeletion(userDeleteHistory.getDeletion());
             userDeleteHistoryRepository.save(userDeleteHistory);
 
             return "삭제 되었습니다.";
