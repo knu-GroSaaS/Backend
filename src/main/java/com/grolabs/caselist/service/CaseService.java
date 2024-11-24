@@ -42,9 +42,7 @@ public class CaseService {
 
         User user = userRepository.findByUsername(username);
 
-        Case aCase = new Case(requestDto);
-
-        aCase.setUserId(user.getId());
+        Case aCase = new Case(requestDto, user);
 
         caseRepository.save(aCase);
 
@@ -95,9 +93,6 @@ public class CaseService {
         }
         if (requestDto.getSeverity() != null) {
             currentCase.setSeverity(requestDto.getSeverity());
-        }
-        if (requestDto.getUserId() != null) {
-            currentCase.setUserId(requestDto.getUserId());
         }
 
         currentCase.setUpdatedAt(LocalDateTime.now());

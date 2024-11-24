@@ -85,13 +85,18 @@ public class UserService {
         }
     }
 
-    public List<LoginHistory> getAllHistory(String accessToken){
+
+    public List<LoginHistory> findHistory(String accessToken){
         String token = accessToken.split(" ")[1];
         String username = jwtUtil.getUsername(token);
 
         User user = userRepository.findByUsername(username);
 
         return loginHistoryRepository.findAllByUserId(user.getId());
+    }
+
+    public List<LoginHistory> findAllHistory(){
+        return loginHistoryRepository.findAll();
     }
 
 }

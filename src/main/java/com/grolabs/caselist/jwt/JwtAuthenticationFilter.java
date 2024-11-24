@@ -69,8 +69,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         //로그인 기록 작성
         LoginHistory loginHistory = new LoginHistory(userRepository
-                .findByUsername(username)
-                .getId());
+                .findByUsername(username));
 
         loginHistoryRepository.save(loginHistory);
 

@@ -15,8 +15,9 @@ public class LoginHistory {
     @Column(name = "log_id")
     private Long logId;
 
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY) // User 엔티티와 다대일 관계 설정
+    @JoinColumn(name = "user_id", nullable = false) // 외래 키로 사용할 컬럼 정의
+    private User user;
 
     @CreationTimestamp
     @Column(name = "login_time", nullable = false)
@@ -25,8 +26,8 @@ public class LoginHistory {
     @Column(name = "logout_time")
     private LocalDateTime logoutTime;
 
-    public LoginHistory(Long userId){
-        this.userId = userId;
+    public LoginHistory(User user){
+        this.user = user;
         this.loginTime = LocalDateTime.now();
     }
 
