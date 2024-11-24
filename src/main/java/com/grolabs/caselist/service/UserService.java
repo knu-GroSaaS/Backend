@@ -16,6 +16,7 @@ import com.grolabs.caselist.repository.UserDeleteHistoryRepository;
 import com.grolabs.caselist.repository.LoginHistoryRepository;
 
 import com.grolabs.caselist.repository.UserRepository;
+import com.grolabs.caselist.service.email.EmailService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,11 +39,17 @@ public class UserService {
 
     private final UserCreateHistoryRepository userCreateHistoryRepository;
 
+    private final UserDeleteHistoryRepository userDeleteHistoryRepository;
+
+    private final EmailService emailService;
+
 
     public static final String MANAGER_NOT_FOUND = "매니저를 찾을 수 없습니다.";
     public static final String USER_NOT_FOUND = "유저를 찾을 수 없습니다.";
+    public static final String EMAIL_SUBJECT = "GROCASS 권한 변경";
+    public static final String EMAIL_TEXT = "권한이 삭제되었습니다.";
 
-    private UserDeleteHistoryRepository userDeleteHistoryRepository;
+
 
 
     @Transactional
@@ -122,6 +129,7 @@ public class UserService {
             // 삭제 작업 수행
             userCreateHistoryRepository.delete(userCreateHistory);
 
+
             //user 정보 변경
             user.setStatus(UserStatus.SUSPENDED);
             user.setDeleteTime();
@@ -134,6 +142,9 @@ public class UserService {
             userDeleteHistory.setUser(user);
             userDeleteHistory.setDeletion(userDeleteHistory.getDeletion());
             userDeleteHistoryRepository.save(userDeleteHistory);
+
+            //email발송
+            emailService.sendEmail(user.getEmail(),EMAIL_SUBJECT,EMAIL_TEXT);
 
             return "삭제 되었습니다.";
         }
