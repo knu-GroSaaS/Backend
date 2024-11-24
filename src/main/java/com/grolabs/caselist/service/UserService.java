@@ -89,10 +89,20 @@ public class UserService {
             if(user==null){
                 throw new NoSuchElementException(USER_NOT_FOUND);
             }
+
+            //사용자 생성테이블에서 삭제
+            UserCreateHistory userCreateHistory = userCreateHistoryRepository.findByUsername(user.getUsername());
+            if(userCreateHistory==null){
+                throw new NoSuchElementException(USER_NOT_FOUND);
+            }
+            // 삭제 작업 수행
+            userCreateHistoryRepository.delete(userCreateHistory);
+
             //user 정보 변경
             user.setStatus(UserStatus.SUSPENDED);
             user.setDeleteTime();
             userRepository.save(user);
+
 
             UserDeleteHistory userDeleteHistory = new UserDeleteHistory();
             userDeleteHistory.setRequester(manager.getId());

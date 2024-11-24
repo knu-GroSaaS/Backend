@@ -48,7 +48,7 @@ public class UserController {
 
     /**
      * Delete  User
-     * Handles HTTP POST requests to add a new user to the dashboard.
+     * Handles HTTP Delete requests to add a new user to the dashboard.
      *
      * @param userDeleteDto A DTO containing the following fields:
      *                   - requestername: The name of the user making the request (e.g., manager).
@@ -56,7 +56,7 @@ public class UserController {
      *                   - deletion: The timestamp or identifier for the user creation process.
      * @return ResponseEntity<String> A response containing a success message.
      * */
-    @PostMapping("manager/delete")
+    @DeleteMapping("manager/delete")
     public ResponseEntity<String> deleteUser(@RequestBody UserDeleteDto userDeleteDto){
         return ResponseEntity.ok(userService.UserDelete(userDeleteDto));
     }
