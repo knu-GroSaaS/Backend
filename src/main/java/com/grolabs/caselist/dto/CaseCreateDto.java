@@ -20,8 +20,6 @@ public class CaseCreateDto {
 
     private String Severity;
 
-    private Long userId;
-
 
     public CaseCreateDto(Case aCase) {
         this(
@@ -29,8 +27,7 @@ public class CaseCreateDto {
                 aCase.getProduct(),
                 aCase.getVersion(),
                 aCase.getSerialNumber(),
-                aCase.getSeverity(),
-                aCase.getUserId()
+                aCase.getSeverity()
         );
     }
 }

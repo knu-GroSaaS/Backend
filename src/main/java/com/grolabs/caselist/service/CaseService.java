@@ -36,9 +36,15 @@ public class CaseService {
      * @param requestDto product, version, subject, description, userId (not null)
      * @return String
      */
-    public String createCase(CaseCreateDto requestDto) {
+    public String createCase(String accessToken, CaseCreateDto requestDto) {
+        String token = accessToken.split(" ")[1];
+        String username = jwtUtil.getUsername(token);
+
+        User user = userRepository.findByUsername(username);
 
         Case aCase = new Case(requestDto);
+
+        aCase.setUserId(user.getId());
 
         caseRepository.save(aCase);
 

@@ -67,7 +67,6 @@ public class Case {
         this.version = requestDto.getVersion();
         this.serialNumber = requestDto.getSerialNumber();
         this.severity = requestDto.getSeverity();
-        this.userId = requestDto.getUserId();
         this.caseStatus = NOT_STARTED;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();

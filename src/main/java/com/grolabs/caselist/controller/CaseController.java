@@ -26,9 +26,9 @@ public class CaseController {
      * @return String
      */
     @PostMapping
-    public String createCase(@RequestBody CaseCreateDto requestDto) {
+    public String createCase(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken, @RequestBody CaseCreateDto requestDto) {
 
-        return caseService.createCase(requestDto);
+        return caseService.createCase(accessToken, requestDto);
     }
 
     /**
