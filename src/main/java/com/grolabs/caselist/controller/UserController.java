@@ -9,6 +9,7 @@ import com.grolabs.caselist.repository.UserRepository;
 import com.grolabs.caselist.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClient;
@@ -52,9 +53,9 @@ public class UserController {
         return ResponseEntity.ok(userService.UserCreate(userAddDto));
     }
 
-    @GetMapping("/manager/loghistory/{userId}")
-    public List<LoginHistory> findAllHistory(@PathVariable Long userId){
-        return userService.getAllHistory(userId);
+    @GetMapping("/user/loghistory")
+    public List<LoginHistory> findAllHistory(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken){
+        return userService.getAllHistory(accessToken);
     }
 
 }
