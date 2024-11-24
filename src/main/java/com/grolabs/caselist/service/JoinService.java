@@ -5,7 +5,10 @@ import com.grolabs.caselist.dto.JoinDto;
 import com.grolabs.caselist.dto.PasswordEditDto;
 import com.grolabs.caselist.entity.User;
 import com.grolabs.caselist.entity.enums.UserStatus;
+import com.grolabs.caselist.jwt.JWTUtil;
 import com.grolabs.caselist.repository.UserRepository;
+import com.grolabs.caselist.service.email.EmailService;
+import com.grolabs.caselist.service.email.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +24,9 @@ public class JoinService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final TokenService tokenService;
+    private final EmailService emailService;
+    private final JWTUtil jwtUtil;
 
     public void joinUser(JoinDto joinDto) throws CloneNotSupportedException {
         System.out.println(joinDto);
@@ -53,7 +59,29 @@ public class JoinService {
         return !exists;
     }
 
-    public boolean updatePassword(PasswordEditDto passwordEditDto) {
+
+    public String requestPassword(String accessToken) {
+        String usertoken = accessToken.split(" ")[1];
+
+        String username = jwtUtil.getUsername(usertoken);
+        String email = userRepository.findByUsername(username).getEmail();
+
+        String token = tokenService.generateToken(email);
+
+        emailService.sendEmail(email, "비밀번호 재설정 요청",
+                "위 인증 코드를 이용하여 비밀번호를 재설정하세요: " + token);
+
+        return "비밀번호 재설정 이메일이 전송되었습니다.";
+    }
+
+    public boolean updatePassword(String token, PasswordEditDto passwordEditDto) {
+
+        String email = tokenService.validateToken(token);
+
+        if (email == null) {
+            throw new IllegalArgumentException("인증코드가 유효하지 않습니다.");
+        }
+
         User user=userRepository.findByUsername(passwordEditDto.getUsername());
         if(user==null) {
             throw new NoSuchElementException("사용자가 존재하지 않습니다.");
@@ -67,6 +95,7 @@ public class JoinService {
             user.setPassword(passwordEncoder.encode(passwordEditDto.getNewPassword()));
             user.setPasswordUpdateTime(LocalDateTime.now());
             userRepository.save(user);
+            tokenService.invalidateToken(token);
             System.out.println("성공");
             return true;
         }
