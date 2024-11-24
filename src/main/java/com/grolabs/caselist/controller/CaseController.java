@@ -95,6 +95,7 @@ public class CaseController {
     @GetMapping("/search")
     public List<Case> searchCase(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken, @RequestParam String keyWord) {
 
+        System.out.println(accessToken);
         return caseService.searchCase(accessToken, keyWord);
     }
 }

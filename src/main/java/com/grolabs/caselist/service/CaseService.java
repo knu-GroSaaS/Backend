@@ -143,7 +143,9 @@ public class CaseService {
      * @return Cases List
      */
     public List<Case> searchCase(String accessToken, String keyWord) {
-        String username = jwtUtil.getUsername(accessToken);
+
+        String token = accessToken.split(" ")[1];
+        String username = jwtUtil.getUsername(token);
 
         User user = userRepository.findByUsername(username);
 
