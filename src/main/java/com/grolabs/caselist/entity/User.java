@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -45,6 +46,7 @@ public class User {
     @UpdateTimestamp
     private Timestamp updateTime;
 
+    private LocalDateTime passwordUpdateTime;
 
     private Timestamp deleteTime;
 
@@ -53,6 +55,10 @@ public class User {
 
     @Column(unique = true)
     private String emailVerificationToken;
+
+    private String resetToken; // 비밀번호 재설정 토큰
+
+    private LocalDateTime tokenExpiryTime; // 토큰 만료 시간
 
     // 이메일 검증 상태를 업데이트하는 메서드
     public void verifyEmail() {

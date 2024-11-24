@@ -9,6 +9,7 @@ import com.grolabs.caselist.service.JoinService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -44,9 +45,14 @@ public class IndexController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/password")
+    public String requestPassword(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken){
+        return joinService.requestPassword(accessToken);
+    }
+
     @PostMapping("/password/update")
-    public ResponseEntity<Void> updatePassword(PasswordEditDto passwordEditDto) {
-        if(joinService.updatePassword(passwordEditDto)) {
+    public ResponseEntity<Void> updatePassword(@RequestParam String token, PasswordEditDto passwordEditDto) {
+        if(joinService.updatePassword(token, passwordEditDto)) {
             return ResponseEntity.ok().build();
         }
         else{
