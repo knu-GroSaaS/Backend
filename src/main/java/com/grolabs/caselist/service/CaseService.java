@@ -4,9 +4,11 @@ import com.grolabs.caselist.dto.CaseStatusUpdateDto;
 import com.grolabs.caselist.entity.Case;
 import com.grolabs.caselist.entity.User;
 import com.grolabs.caselist.entity.enums.CaseStatus;
+import com.grolabs.caselist.jwt.JWTUtil;
 import com.grolabs.caselist.repository.CaseRepository;
 import com.grolabs.caselist.dto.CaseCreateDto;
 import com.grolabs.caselist.dto.CaseUpdateDto;
+import com.grolabs.caselist.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,10 @@ import java.util.stream.Collectors;
 public class CaseService {
     public final CaseRepository caseRepository;
 
+    public final UserRepository userRepository;
+
+    public final JWTUtil jwtUtil;
+
     public static final String BOARD_NOT_FOUND = "글을 찾을 수 없습니다.";
 
     /**
@@ -30,9 +36,13 @@ public class CaseService {
      * @param requestDto product, version, subject, description, userId (not null)
      * @return String
      */
-    public String createCase(CaseCreateDto requestDto) {
+    public String createCase(String accessToken, CaseCreateDto requestDto) {
+        String token = accessToken.split(" ")[1];
+        String username = jwtUtil.getUsername(token);
 
-        Case aCase = new Case(requestDto);
+        User user = userRepository.findByUsername(username);
+
+        Case aCase = new Case(requestDto, user);
 
         caseRepository.save(aCase);
 
@@ -78,11 +88,11 @@ public class CaseService {
         if (requestDto.getProblemTitle() != null) {
             currentCase.setProblemTitle(requestDto.getProblemTitle());
         }
-        if (requestDto.getDescription() != null) {
-            currentCase.setDescription(requestDto.getDescription());
+        if (requestDto.getSerialNumber() != null) {
+            currentCase.setSerialNumber(requestDto.getSerialNumber());
         }
-        if (requestDto.getUserId() != null) {
-            currentCase.setUserId(requestDto.getUserId());
+        if (requestDto.getSeverity() != null) {
+            currentCase.setSeverity(requestDto.getSeverity());
         }
 
         currentCase.setUpdatedAt(LocalDateTime.now());
@@ -133,9 +143,14 @@ public class CaseService {
      * @param keyWord Search from case-list with keyword
      * @return Cases List
      */
-    public List<Case> searchCase(@RequestBody String keyWord) {
+    public List<Case> searchCase(String accessToken, String keyWord) {
 
-        List<Case> cases = caseRepository.findAll();
+        String token = accessToken.split(" ")[1];
+        String username = jwtUtil.getUsername(token);
+
+        User user = userRepository.findByUsername(username);
+
+        List<Case> cases = caseRepository.findAllByUserId(user.getId());
 
         return cases.stream()
                 .filter(c->containsKeywordInFields(c, keyWord))
@@ -145,7 +160,6 @@ public class CaseService {
     private boolean containsKeywordInFields(Case c, String keyword) {
         // 필드에 해당 키워드가 포함되어 있는지 검사
         return (c.getProduct() != null && c.getProduct().contains(keyword)) ||
-                (c.getDescription() != null && c.getDescription().contains(keyword)) ||
                 (c.getVersion() != null && c.getVersion().contains(keyword)) ||
                 (c.getProblemTitle() != null && c.getProblemTitle().contains(keyword));
     }

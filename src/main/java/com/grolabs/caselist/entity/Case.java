@@ -37,11 +37,9 @@ public class Case {
     @Column(name = "severity", nullable = false)
     private String severity;
 
-    @Column(name = "description", nullable = false)
-    private String description;
-
-    @Column(name = "userId", nullable = false)
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY) // User 엔티티와 다대일 관계 설정
+    @JoinColumn(name = "userId", nullable = false) // 외래 키로 사용할 컬럼 정의
+    private User user;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
@@ -64,14 +62,12 @@ public class Case {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public Case(CaseCreateDto requestDto) {
+    public Case(CaseCreateDto requestDto, User user) {
         this.problemTitle = requestDto.getProblemTitle();
         this.product = requestDto.getProduct();
         this.version = requestDto.getVersion();
         this.serialNumber = requestDto.getSerialNumber();
         this.severity = requestDto.getSeverity();
-        this.description = requestDto.getDescription();
-        this.userId = requestDto.getUserId();
         this.caseStatus = NOT_STARTED;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();

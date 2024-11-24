@@ -4,24 +4,41 @@ package com.grolabs.caselist.service;
 import com.grolabs.caselist.dto.user.UserAddDto;
 import com.grolabs.caselist.dto.user.UserAuthorityDto;
 import com.grolabs.caselist.dto.user.UserDeleteDto;
+import com.grolabs.caselist.entity.LoginHistory;
 import com.grolabs.caselist.entity.User;
+import com.grolabs.caselist.jwt.JWTUtil;
 import com.grolabs.caselist.entity.UserCreateHistory;
 import com.grolabs.caselist.entity.UserDeleteHistory;
 import com.grolabs.caselist.entity.enums.UserStatus;
 import com.grolabs.caselist.repository.UserCreateHistoryRepository;
 import com.grolabs.caselist.repository.UserDeleteHistoryRepository;
+import com.grolabs.caselist.repository.LoginHistoryRepository;
+import com.grolabs.caselist.repository.UserCreateHistoryRepository;
+
 import com.grolabs.caselist.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import java.util.NoSuchElementException;
+import java.util.List;
+
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class UserService {
+    private final UserRepository userRepository;
+
+    private final JWTUtil jwtUtil;
+
+    private final LoginHistoryRepository loginHistoryRepository;
+
+    private final UserCreateHistoryRepository userCreateHistoryRepository;
+
 
     public static final String MANAGER_NOT_FOUND = "매니저를 찾을 수 없습니다.";
     public static final String USER_NOT_FOUND = "유저를 찾을 수 없습니다.";
@@ -32,6 +49,7 @@ public class UserService {
     private UserCreateHistoryRepository userCreateHistoryRepository;
     @Autowired
     private UserDeleteHistoryRepository userDeleteHistoryRepository;
+
 
     @Transactional
     public void updateUserAuthority(UserAuthorityDto userAuthorityDto){
@@ -46,6 +64,16 @@ public class UserService {
         }
     }
 
+
+    public User getUser(HttpServletRequest request){
+        String authorization = request.getHeader("Authorization");
+        String token = authorization.split(" ")[1];
+
+        String username = jwtUtil.getUsername(token);
+
+        return userRepository.findByUsername(username);
+    }
+
     public String UserCreate(UserAddDto userAddDto){
 
         User manager = userRepository.findByUsername(userAddDto.getRequestername());
@@ -57,7 +85,7 @@ public class UserService {
             String creation = userAddDto.getCreation();
             String username = userAddDto.getUsername();
             if (managerId == null || creation == null || username == null) {
-                return "항목을 모두 작성해 주세요";
+                throw new IllegalArgumentException("항목을 모두 작성해 주세요");
             }
             User user = userRepository.findByUsername(username);
             if(user==null){
@@ -117,5 +145,18 @@ public class UserService {
         }
     }
 
+
+    public List<LoginHistory> findHistory(String accessToken){
+        String token = accessToken.split(" ")[1];
+        String username = jwtUtil.getUsername(token);
+
+        User user = userRepository.findByUsername(username);
+
+        return loginHistoryRepository.findAllByUserId(user.getId());
+    }
+
+    public List<LoginHistory> findAllHistory(){
+        return loginHistoryRepository.findAll();
+    }
 
 }

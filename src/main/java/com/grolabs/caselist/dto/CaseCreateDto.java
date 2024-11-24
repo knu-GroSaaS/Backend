@@ -16,13 +16,9 @@ public class CaseCreateDto {
 
     private String version;
 
-    private String description;
-
     private String serialNumber;
 
     private String Severity;
-
-    private Long userId;
 
 
     public CaseCreateDto(Case aCase) {
@@ -30,10 +26,8 @@ public class CaseCreateDto {
                 aCase.getProblemTitle(),
                 aCase.getProduct(),
                 aCase.getVersion(),
-                aCase.getDescription(),
                 aCase.getSerialNumber(),
-                aCase.getSeverity(),
-                aCase.getUserId()
+                aCase.getSeverity()
         );
     }
 }

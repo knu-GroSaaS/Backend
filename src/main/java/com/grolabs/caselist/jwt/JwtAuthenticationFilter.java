@@ -3,13 +3,19 @@ package com.grolabs.caselist.jwt;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.grolabs.caselist.auth.PrincipalDetails;
 import com.grolabs.caselist.dto.user.CustomUserDetails;
+import com.grolabs.caselist.entity.LoginHistory;
+import com.grolabs.caselist.entity.RefreshEntity;
 import com.grolabs.caselist.entity.User;
+import com.grolabs.caselist.repository.LoginHistoryRepository;
+import com.grolabs.caselist.repository.RefreshEntityRepository;
+import com.grolabs.caselist.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,10 +25,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.security.Timestamp;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.*;
 
 
 /**spring security에 UsernamePasswordAuthenticationFilter가 있음
@@ -34,6 +41,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
+    private final LoginHistoryRepository loginHistoryRepository;
+    private final UserRepository userRepository;
+    private final RefreshEntityRepository refreshEntityRepository;
 
 
     @Override
@@ -52,7 +62,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
 
         // 유저 정보
         String username = authResult.getName();
@@ -62,11 +71,24 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
 
+        User user = userRepository.findByUsername(username);
+        //로그인 기록 작성
+        LoginHistory loginHistory = new LoginHistory(user);
+        // 비밀번호 바꾼 주기 확인
+        if (shouldRequestPasswordChange(user.getPasswordUpdateTime())){
+            response.setContentType("application/json");
+            response.getWriter().write("{\"message\": \"비밀번호를 변경한지 오래되었습니다. 새 비밀번호를 설정해주세요.\"}");
+        }
+        loginHistoryRepository.save(loginHistory);
+
         //토큰 생성
-        String access = jwtUtil.createJwt("accessToken", username, role, 6000000L);
-        String refresh = jwtUtil.createJwt("refreshToken", username, role, 86400000L);
+        String access = jwtUtil.createJwt("accessToken", username, role, loginHistory.getLogId(), 36000000L); // 1시간
+        String refresh = jwtUtil.createJwt("refreshToken", username, role, loginHistory.getLogId(), 2592000000L); // 3일
         response.setContentType("application/json"); // JSON 응답임을 명시
         response.setCharacterEncoding("UTF-8"); // UTF-8 설정
+
+        //Refresh 토큰 저장
+        addRefreshEntity(username, refresh, 2592000000L);
 
         // JSON 데이터를 담을 Map 생성
         Map<String, String> tokenMap = new HashMap<>();
@@ -77,6 +99,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonResponse = objectMapper.writeValueAsString(tokenMap);
 
+
+
         // 응답 스트림에 JSON 작성
         response.getWriter().write(jsonResponse);
     }
@@ -85,6 +109,27 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected  void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException faild) {
 
         response.setStatus(462);
+    }
+
+    private void addRefreshEntity(String username, String refresh, Long expiredMs) {
+
+        Date date = new Date(System.currentTimeMillis() + expiredMs);
+
+        RefreshEntity refreshEntity = new RefreshEntity();
+        refreshEntity.setUsername(username);
+        refreshEntity.setRefresh(refresh);
+        refreshEntity.setExpiration(date.toString());
+
+        refreshEntityRepository.save(refreshEntity);
+    }
+
+    public boolean shouldRequestPasswordChange(LocalDateTime passwordUpdateTime) {
+        // 현재 시간
+        LocalDateTime now = LocalDateTime.now();
+
+        // 1분이 지났는지 확인
+        Duration duration = Duration.between(passwordUpdateTime, now);
+        return duration.toMinutes() >= 1; // 1분 이상 경과 여부
     }
 
 //    private Cookie createCookie(String key, String value) {

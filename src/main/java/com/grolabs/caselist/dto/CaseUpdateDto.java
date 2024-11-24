@@ -9,16 +9,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CaseUpdateDto {
 
-
     private String problemTitle;
 
     private String product;
 
     private String version;
 
-    private String description;
+    private String serialNumber;
+
+    private String severity;
 
     private Long userId;
-
 
 }
