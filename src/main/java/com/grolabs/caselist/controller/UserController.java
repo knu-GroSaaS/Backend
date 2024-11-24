@@ -3,6 +3,7 @@ package com.grolabs.caselist.controller;
 
 import com.grolabs.caselist.dto.user.UserAddDto;
 import com.grolabs.caselist.dto.user.UserAuthorityDto;
+import com.grolabs.caselist.dto.user.UserDeleteDto;
 import com.grolabs.caselist.entity.LoginHistory;
 import com.grolabs.caselist.entity.User;
 import com.grolabs.caselist.repository.UserRepository;
@@ -55,12 +56,26 @@ public class UserController {
     }
 
     /**
+     * Delete  User
+     * Handles HTTP Delete requests to add a new user to the dashboard.
+     *
+     * @param userDeleteDto A DTO containing the following fields:
+     *                   - requestername: The name of the user making the request (e.g., manager).
+     *                   - username: The name of the user to be added to the dashboard.
+     *                   - deletion: The timestamp or identifier for the user creation process.
+     * @return ResponseEntity<String> A response containing a success message.
+     * */
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteUser(@RequestBody UserDeleteDto userDeleteDto){
+        return ResponseEntity.ok(userService.UserDelete(userDeleteDto));
+    }
+    /**
      * Find loginHistory User
      * Handles HTTP POST requests to find user history in DB.
      *
      * @param accessToken in Header
      * @return List<LoginHistory>
-     */
+     **/
     @GetMapping("/user/loghistory")
     public List<LoginHistory> findHistory(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken){
         return userService.findHistory(accessToken);

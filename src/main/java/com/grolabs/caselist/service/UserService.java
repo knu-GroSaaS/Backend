@@ -3,12 +3,15 @@ package com.grolabs.caselist.service;
 
 import com.grolabs.caselist.dto.user.UserAddDto;
 import com.grolabs.caselist.dto.user.UserAuthorityDto;
+import com.grolabs.caselist.dto.user.UserDeleteDto;
 import com.grolabs.caselist.entity.LoginHistory;
 import com.grolabs.caselist.entity.User;
-
 import com.grolabs.caselist.jwt.JWTUtil;
-
 import com.grolabs.caselist.entity.UserCreateHistory;
+import com.grolabs.caselist.entity.UserDeleteHistory;
+import com.grolabs.caselist.entity.enums.UserStatus;
+import com.grolabs.caselist.repository.UserCreateHistoryRepository;
+import com.grolabs.caselist.repository.UserDeleteHistoryRepository;
 import com.grolabs.caselist.repository.LoginHistoryRepository;
 import com.grolabs.caselist.repository.UserCreateHistoryRepository;
 
@@ -19,7 +22,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
+import java.util.NoSuchElementException;
 import java.util.List;
+
 
 @Service
 @Transactional
@@ -32,6 +38,17 @@ public class UserService {
     private final LoginHistoryRepository loginHistoryRepository;
 
     private final UserCreateHistoryRepository userCreateHistoryRepository;
+
+
+    public static final String MANAGER_NOT_FOUND = "매니저를 찾을 수 없습니다.";
+    public static final String USER_NOT_FOUND = "유저를 찾을 수 없습니다.";
+
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private UserCreateHistoryRepository userCreateHistoryRepository;
+    @Autowired
+    private UserDeleteHistoryRepository userDeleteHistoryRepository;
 
 
     @Transactional
@@ -58,9 +75,11 @@ public class UserService {
     }
 
     public String UserCreate(UserAddDto userAddDto){
-        System.out.println(userAddDto.getRequestername());
+
         User manager = userRepository.findByUsername(userAddDto.getRequestername());
-        System.out.println(manager.getUsername());
+        if(manager==null){
+            throw new NoSuchElementException(MANAGER_NOT_FOUND);
+        }
         if(manager.getUsertype().equals("ROLE_MANAGER")){
             Long managerId = manager.getId();
             String creation = userAddDto.getCreation();
@@ -69,6 +88,9 @@ public class UserService {
                 throw new IllegalArgumentException("항목을 모두 작성해 주세요");
             }
             User user = userRepository.findByUsername(username);
+            if(user==null){
+                throw new NoSuchElementException(USER_NOT_FOUND);
+            }
 
             UserCreateHistory userCreateHistory = new UserCreateHistory();
             userCreateHistory.setRequester(managerId);
@@ -77,8 +99,46 @@ public class UserService {
             System.out.println(userCreateHistory);
             userCreateHistoryRepository.save(userCreateHistory);
 
+            return "추가 되었습니다.";
+        }
+        else{
+            return "매니저 권한이 아닙니다.";
+        }
+    }
 
-            return "success";
+    public String UserDelete(UserDeleteDto userDeleteDto){
+        User manager = userRepository.findByUsername(userDeleteDto.getRequestername());
+        if(manager==null){
+            throw new NoSuchElementException(MANAGER_NOT_FOUND);
+        }
+
+        if(manager.getUsertype().equals("ROLE_MANAGER")){
+            User user = userRepository.findByUsername(userDeleteDto.getUsername());
+            if(user==null){
+                throw new NoSuchElementException(USER_NOT_FOUND);
+            }
+
+            //사용자 생성테이블에서 삭제
+            UserCreateHistory userCreateHistory = userCreateHistoryRepository.findByUserUsername(user.getUsername());
+            if(userCreateHistory==null){
+                throw new NoSuchElementException(USER_NOT_FOUND);
+            }
+            // 삭제 작업 수행
+            userCreateHistoryRepository.delete(userCreateHistory);
+
+            //user 정보 변경
+            user.setStatus(UserStatus.SUSPENDED);
+            user.setDeleteTime();
+            userRepository.save(user);
+
+
+            UserDeleteHistory userDeleteHistory = new UserDeleteHistory();
+            userDeleteHistory.setRequester(manager.getId());
+            userDeleteHistory.setUser(user);
+            userDeleteHistory.setDeletion(userDeleteHistory.getDeletion());
+            userDeleteHistoryRepository.save(userDeleteHistory);
+
+            return "삭제 되었습니다.";
         }
         else{
             return "매니저 권한이 아닙니다.";

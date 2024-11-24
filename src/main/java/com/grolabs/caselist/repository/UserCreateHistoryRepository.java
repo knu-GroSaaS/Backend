@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserCreateHistoryRepository extends JpaRepository<UserCreateHistory, Long> {
+    public UserCreateHistory findByUserUsername(String username);
 }
