@@ -8,7 +8,6 @@ import com.grolabs.caselist.service.CaseService;
 import com.grolabs.caselist.dto.CaseUpdateDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,9 +25,9 @@ public class CaseController {
      * @return String
      */
     @PostMapping
-    public String createCase(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken, @RequestBody CaseCreateDto requestDto) {
+    public String createCase(@RequestBody CaseCreateDto requestDto) {
 
-        return caseService.createCase(accessToken, requestDto);
+        return caseService.createCase(requestDto);
     }
 
     /**
@@ -93,9 +92,8 @@ public class CaseController {
      * @return Cases List
      */
     @GetMapping("/search")
-    public List<Case> searchCase(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken, @RequestParam String keyWord) {
+    public List<Case> searchCase(@RequestParam String keyWord) {
 
-        System.out.println(accessToken);
-        return caseService.searchCase(accessToken, keyWord);
+        return caseService.searchCase(keyWord);
     }
 }

@@ -4,11 +4,9 @@ import com.grolabs.caselist.dto.CaseStatusUpdateDto;
 import com.grolabs.caselist.entity.Case;
 import com.grolabs.caselist.entity.User;
 import com.grolabs.caselist.entity.enums.CaseStatus;
-import com.grolabs.caselist.jwt.JWTUtil;
 import com.grolabs.caselist.repository.CaseRepository;
 import com.grolabs.caselist.dto.CaseCreateDto;
 import com.grolabs.caselist.dto.CaseUpdateDto;
-import com.grolabs.caselist.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,10 +23,6 @@ import java.util.stream.Collectors;
 public class CaseService {
     public final CaseRepository caseRepository;
 
-    public final UserRepository userRepository;
-
-    public final JWTUtil jwtUtil;
-
     public static final String BOARD_NOT_FOUND = "글을 찾을 수 없습니다.";
 
     /**
@@ -36,15 +30,9 @@ public class CaseService {
      * @param requestDto product, version, subject, description, userId (not null)
      * @return String
      */
-    public String createCase(String accessToken, CaseCreateDto requestDto) {
-        String token = accessToken.split(" ")[1];
-        String username = jwtUtil.getUsername(token);
-
-        User user = userRepository.findByUsername(username);
+    public String createCase(CaseCreateDto requestDto) {
 
         Case aCase = new Case(requestDto);
-
-        aCase.setUserId(user.getId());
 
         caseRepository.save(aCase);
 
@@ -148,14 +136,9 @@ public class CaseService {
      * @param keyWord Search from case-list with keyword
      * @return Cases List
      */
-    public List<Case> searchCase(String accessToken, String keyWord) {
+    public List<Case> searchCase(String keyWord) {
 
-        String token = accessToken.split(" ")[1];
-        String username = jwtUtil.getUsername(token);
-
-        User user = userRepository.findByUsername(username);
-
-        List<Case> cases = caseRepository.findAllByUserId(user.getId());
+        List<Case> cases = caseRepository.findAll();
 
         return cases.stream()
                 .filter(c->containsKeywordInFields(c, keyWord))
