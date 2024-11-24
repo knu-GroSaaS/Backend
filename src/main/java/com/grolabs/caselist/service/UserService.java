@@ -43,11 +43,6 @@ public class UserService {
     public static final String MANAGER_NOT_FOUND = "매니저를 찾을 수 없습니다.";
     public static final String USER_NOT_FOUND = "유저를 찾을 수 없습니다.";
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private UserCreateHistoryRepository userCreateHistoryRepository;
-    @Autowired
     private UserDeleteHistoryRepository userDeleteHistoryRepository;
 
 
