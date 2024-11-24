@@ -1,5 +1,6 @@
 package com.grolabs.caselist.entity;
 
+import com.grolabs.caselist.entity.enums.AuthStatus;
 import com.grolabs.caselist.entity.enums.UserStatus;
 import com.grolabs.caselist.entity.enums.UserType;
 import jakarta.persistence.*;
@@ -60,6 +61,8 @@ public class User {
     private String resetToken; // 비밀번호 재설정 토큰
 
     private LocalDateTime tokenExpiryTime; // 토큰 만료 시간
+
+    private AuthStatus authStatus = AuthStatus.NOT_AUTH;//대시보드 권한 필드
 
     // 이메일 검증 상태를 업데이트하는 메서드
     public void verifyEmail() {
