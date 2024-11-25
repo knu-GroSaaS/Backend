@@ -35,11 +35,20 @@ public class UserController {
         return userRepository.findAll();
     }
 
-
+    /**
+     * Retrieve Dashboard User
+     *
+     * Handles HTTP GET requests to retrieve the user associated with the provided JWT token in the request header.
+     * The token is used to identify and authenticate the user, ensuring secure access to the dashboard user information.
+     *
+     * @param request The HTTP request containing the JWT token in the header
+     * @return User
+     * */
     @GetMapping("/manager/getuser")
     public User getUser(HttpServletRequest request) {
         return userService.getUser(request);
     }
+
     /**
     * Add Dashboard User
     * Handles HTTP POST requests to add a new user to the dashboard.
@@ -81,16 +90,32 @@ public class UserController {
         return userService.findHistory(accessToken);
     }
 
+    /**
+     * find all history in login history table
+     *
+     * @return List<LoginHistory>
+     */
     @GetMapping("/manager/loghistory")
     public List<LoginHistory> findAllHistory(){
         return userService.findAllHistory();
     }
 
+    /**
+     * find all unAuthUser in User table
+     *
+     * @return List<User>
+     */
     @GetMapping("/manager/auth")
     public List<User> unAuthUser() {
         return userService.unAuthUser();
     }
 
+    /**
+     * modify User Authentication (No_AUTH -> AUTH_OK)
+     *
+     * @param userId userId of User to be modified
+     * @return ResponseEntity<String>
+     */
     @PostMapping("/manager/auth/{userId}")
     public ResponseEntity<String> modifyUnAuthUser(@PathVariable Long userId){
 

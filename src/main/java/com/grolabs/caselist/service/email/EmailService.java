@@ -11,6 +11,13 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
+    /**
+     *send an email
+     *
+     * @param to the recipient's email address
+     * @param subject the title of the email
+     * @param text the body content of the email
+     */
     public void sendEmail(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);

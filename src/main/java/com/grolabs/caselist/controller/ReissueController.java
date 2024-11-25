@@ -34,6 +34,12 @@ public class ReissueController {
         this.refreshEntityRepository = refreshEntityRepository;
     }
 
+    /**
+     * Refresh Token Reissue api
+     * @param request The HTTP request containing the refresh token in the header
+     * @param response The HTTP response to send the reissued tokens or error messages
+     * @return ResponseEntity<?> A response entity indicating the success or failure of the operation
+     */
     @PostMapping("api/auth/refresh")
     public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) throws IOException {
         //get refresh token
@@ -101,6 +107,13 @@ public class ReissueController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    /**
+     * Save a Refresh Token to the Database
+     *
+     * @param username username
+     * @param refresh refresh token
+     * @param expiredMs expiration time
+     */
     private void addRefreshEntity(String username, String refresh, Long expiredMs) {
 
         Date date = new Date(System.currentTimeMillis() + expiredMs);

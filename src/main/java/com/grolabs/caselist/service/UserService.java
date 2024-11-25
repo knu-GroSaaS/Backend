@@ -51,8 +51,13 @@ public class UserService {
     public static final String EMAIL_TEXT = "권한이 삭제되었습니다.";
 
 
-
-
+    /**
+     *
+     * @param userAuthorityDto A DTO containing the following fields:
+     *                         - managerName
+     *                         - userName
+     *                         - userType
+     */
     @Transactional
     public void updateUserAuthority(UserAuthorityDto userAuthorityDto){
         User manager = userRepository.findByUsername(userAuthorityDto.getManagerName());
@@ -67,6 +72,12 @@ public class UserService {
     }
 
 
+    /**
+     * get User
+     *
+     * @param request The HTTP request containing the JWT token in the header
+     * @return User
+     */
     public User getUser(HttpServletRequest request){
         String authorization = request.getHeader("Authorization");
         String token = authorization.split(" ")[1];
@@ -76,6 +87,15 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
+    /**
+     * Add User Roles for the Dashboard
+     *
+     * @param userAddDto A DTO containing the following fields:
+     *                   - requestername
+     *                   - username
+     *                   - creation
+     * @return String
+     */
     public String UserCreate(UserAddDto userAddDto){
 
         User manager = userRepository.findByUsername(userAddDto.getRequestername());
@@ -110,6 +130,15 @@ public class UserService {
         }
     }
 
+    /**
+     * Delete User Roles for the Dashboard
+     *
+     * @param userDeleteDto A DTO containing the following fields:
+     *                      - requestername
+     *                      - username
+     *                      - deletion
+     * @return String
+     */
     public String UserDelete(UserDeleteDto userDeleteDto){
         User manager = userRepository.findByUsername(userDeleteDto.getRequestername());
         if(manager==null){
@@ -154,7 +183,12 @@ public class UserService {
         }
     }
 
-
+    /**
+     * find History by accessToken
+     *
+     * @param accessToken the JWT token in the header
+     * @return List<LoginHistory>
+     */
     public List<LoginHistory> findHistory(String accessToken){
         String token = accessToken.split(" ")[1];
         String username = jwtUtil.getUsername(token);
@@ -164,15 +198,29 @@ public class UserService {
         return loginHistoryRepository.findAllByUserId(user.getId());
     }
 
+    /**
+     * Return All History
+     *
+     * @return List<LoginHistory>
+     */
     public List<LoginHistory> findAllHistory(){
         return loginHistoryRepository.findAll();
     }
 
+    /**
+     * find all User to have NOT_AUTH
+     * @return List<User>
+     */
     public List<User> unAuthUser() {
 
         return userRepository.findAllByAuthStatus(AuthStatus.NOT_AUTH);
     }
 
+    /**
+     * modify User Authority
+     * @param userId User to be modified
+     * @return String
+     */
     public String modifyUnAuthUser(Long userId){
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new NoSuchElementException("해당 유저를 찾을 수 없습니다.")
