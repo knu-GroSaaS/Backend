@@ -3,6 +3,7 @@ package com.grolabs.caselist.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.grolabs.caselist.entity.RefreshEntity;
 import com.grolabs.caselist.jwt.JWTUtil;
 import com.grolabs.caselist.repository.RefreshEntityRepository;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -76,6 +78,9 @@ public class ReissueController {
         //make new JWT
         String newAccess = jwtUtil.createJwt("access", username, role,history, 600000L);
         String newRefresh = jwtUtil.createJwt("refresh", username, role, history, 2592000000L);
+
+        //Refresh 토큰 저장
+        addRefreshEntity(username, refresh, 2592000000L);
         //response
         response.setContentType("application/json"); // JSON 응답임을 명시
         response.setCharacterEncoding("UTF-8"); // UTF-8 설정
@@ -91,5 +96,17 @@ public class ReissueController {
         response.getWriter().write(jsonResponse);
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    private void addRefreshEntity(String username, String refresh, Long expiredMs) {
+
+        Date date = new Date(System.currentTimeMillis() + expiredMs);
+
+        RefreshEntity refreshEntity = new RefreshEntity();
+        refreshEntity.setUsername(username);
+        refreshEntity.setRefresh(refresh);
+        refreshEntity.setExpiration(date.toString());
+
+        refreshEntityRepository.save(refreshEntity);
     }
 }
