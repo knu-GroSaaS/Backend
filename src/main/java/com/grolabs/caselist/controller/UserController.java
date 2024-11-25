@@ -94,7 +94,7 @@ public class UserController {
     @PostMapping("/manager/auth/{userId}")
     public ResponseEntity<String> modifyUnAuthUser(@PathVariable Long userId){
 
-        return userService.modifyUnAuthUser(userId);
+        return ResponseEntity.ok(userService.modifyUnAuthUser(userId));
     }
 
 }
