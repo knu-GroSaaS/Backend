@@ -28,6 +28,16 @@ public class JoinService {
     private final EmailService emailService;
     private final JWTUtil jwtUtil;
 
+
+    /**
+     * join method
+     *
+     * @param joinDto A DTO containing the following fields:
+     *                - username
+     *                - email
+     *                - phoneNum
+     *                - site
+     */
     public void joinUser(JoinDto joinDto) throws CloneNotSupportedException {
         System.out.println(joinDto);
         User user = new User();
@@ -47,6 +57,13 @@ public class JoinService {
         }
     }
 
+    /**
+     * check duplication
+     *
+     * @param type type of value (email or username)
+     * @param value value to be checked for duplication
+     * @return boolean
+     */
     public boolean checkDuplication(String type, String value) {
         boolean exists;
         if ("username".equals(type)) {
@@ -60,6 +77,12 @@ public class JoinService {
     }
 
 
+    /**
+     * Sends an email with a password change token.
+     *
+     * @param accessToken The JWT access token provided in the request header to identify the user.
+     * @return String
+     */
     public String requestPassword(String accessToken) {
         String usertoken = accessToken.split(" ")[1];
 
@@ -74,6 +97,16 @@ public class JoinService {
         return "비밀번호 재설정 이메일이 전송되었습니다.";
     }
 
+    /**
+     * Updates the User's password after validating the reset token and input details.
+     *
+     * @param token A password reset token to validate the user's identity.
+     * @param passwordEditDto A DTO containing the following fields:
+     *                        - username
+     *                        - currentPassword
+     *                        - newPassword
+     * @return boolean
+     */
     public boolean updatePassword(String token, PasswordEditDto passwordEditDto) {
 
         String email = tokenService.validateToken(token);
