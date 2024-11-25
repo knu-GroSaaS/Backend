@@ -86,4 +86,15 @@ public class UserController {
         return userService.findAllHistory();
     }
 
+    @GetMapping("/manager/auth")
+    public List<User> unAuthUser() {
+        return userService.unAuthUser();
+    }
+
+    @PostMapping("/manager/auth/{userId}")
+    public ResponseEntity<String> modifyUnAuthUser(@PathVariable Long userId){
+
+        return ResponseEntity.ok(userService.modifyUnAuthUser(userId));
+    }
+
 }

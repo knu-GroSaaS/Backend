@@ -19,6 +19,7 @@ import com.grolabs.caselist.repository.UserRepository;
 import com.grolabs.caselist.service.email.EmailService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -167,4 +168,18 @@ public class UserService {
         return loginHistoryRepository.findAll();
     }
 
+    public List<User> unAuthUser() {
+
+        return userRepository.findAllByAuthStatus(AuthStatus.NOT_AUTH);
+    }
+
+    public String modifyUnAuthUser(Long userId){
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new NoSuchElementException("해당 유저를 찾을 수 없습니다.")
+        );
+
+        user.setAuthStatus(AuthStatus.AUTH_OK);
+
+        return "유저 권한을 설정했습니다.";
+    }
 }
