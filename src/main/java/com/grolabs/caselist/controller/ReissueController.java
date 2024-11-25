@@ -75,14 +75,14 @@ public class ReissueController {
 
         //make new JWT
         String newAccess = jwtUtil.createJwt("access", username, role,history, 600000L);
-
+        String newRefresh = jwtUtil.createJwt("refresh", username, role, history, 2592000000L);
         //response
         response.setContentType("application/json"); // JSON 응답임을 명시
         response.setCharacterEncoding("UTF-8"); // UTF-8 설정
 
         Map<String, String> tokenMap = new HashMap<>();
         tokenMap.put("accessToken", newAccess);
-        tokenMap.put("refreshToken", refresh);
+        tokenMap.put("refreshToken", newRefresh);
 
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonResponse = objectMapper.writeValueAsString(tokenMap);
