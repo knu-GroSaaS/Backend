@@ -85,7 +85,7 @@ public class IndexController {
      *     - success updatePassword -> ok code
      *     - fail updatePassword -> bad code
      */
-    @PostMapping("/password/update")
+    @PutMapping("/password/update")
     public ResponseEntity<Void> updatePassword(@RequestParam String token, PasswordEditDto passwordEditDto) {
         if(joinService.updatePassword(token, passwordEditDto)) {
             return ResponseEntity.ok().build();

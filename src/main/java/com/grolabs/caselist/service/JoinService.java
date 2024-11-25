@@ -123,7 +123,7 @@ public class JoinService {
         //받아온 비밀번호와 저장된 비밀번호가 다를 경우 or 현재 비밀번호와 바꿀 비밀번호가 같을 경우 return false
         if(!passwordEncoder.matches(passwordEditDto.getCurrentPassword(),user.getPassword())|| passwordEditDto.getNewPassword().equals(passwordEditDto.getCurrentPassword())) {
             System.out.println("실패");
-            throw new IllegalArgumentException("패스워드가 다릅니다");
+            throw new IllegalArgumentException("비밀번호를 변경할 수 없습니다");
         }
         else{
             user.setPassword(passwordEncoder.encode(passwordEditDto.getNewPassword()));
