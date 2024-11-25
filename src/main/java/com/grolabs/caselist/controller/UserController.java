@@ -6,6 +6,7 @@ import com.grolabs.caselist.dto.user.UserAuthorityDto;
 import com.grolabs.caselist.dto.user.UserDeleteDto;
 import com.grolabs.caselist.entity.LoginHistory;
 import com.grolabs.caselist.entity.User;
+import com.grolabs.caselist.entity.UserCreateHistory;
 import com.grolabs.caselist.repository.UserRepository;
 import com.grolabs.caselist.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -74,7 +75,7 @@ public class UserController {
      *                   - deletion: The timestamp or identifier for the user creation process.
      * @return ResponseEntity<String> A response containing a success message.
      * */
-    @DeleteMapping("/delete")
+    @DeleteMapping("/manager/delete")
     public ResponseEntity<String> deleteUser(@RequestBody UserDeleteDto userDeleteDto){
         return ResponseEntity.ok(userService.UserDelete(userDeleteDto));
     }
@@ -99,6 +100,12 @@ public class UserController {
     public List<LoginHistory> findAllHistory(){
         return userService.findAllHistory();
     }
+
+    @GetMapping("/manager/createhis")
+    public List<UserCreateHistory> findAllCreateHistory(){
+        return userService.findAllCreateHistory();
+    }
+
 
     /**
      * find all unAuthUser in User table
