@@ -4,6 +4,7 @@ package com.grolabs.caselist.service;
 import com.grolabs.caselist.dto.JoinDto;
 import com.grolabs.caselist.dto.PasswordEditDto;
 import com.grolabs.caselist.entity.User;
+import com.grolabs.caselist.entity.enums.AuthStatus;
 import com.grolabs.caselist.entity.enums.UserStatus;
 import com.grolabs.caselist.jwt.JWTUtil;
 import com.grolabs.caselist.repository.UserRepository;
@@ -157,6 +158,7 @@ public class JoinService {
         user.setStatus(UserStatus.INACTIVE);
         user.setPasswordUpdateTime(LocalDateTime.now());
         user.setUsertype("ROLE_MANAGER");
+        user.setAuthStatus(AuthStatus.AUTH_OK);
 
         if(userRepository.existsByUsername(joinDto.getUsername())){
             throw new IllegalArgumentException("아이디 중복을 확인해주세요.");
