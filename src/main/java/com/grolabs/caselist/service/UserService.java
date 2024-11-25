@@ -169,6 +169,6 @@ public class UserService {
 
     public List<User> unAuthUser() {
 
-
+        return userRepository.findAllByAuthStatus(AuthStatus.NOT_AUTH);
     }
 }
