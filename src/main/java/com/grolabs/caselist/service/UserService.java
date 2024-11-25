@@ -167,4 +167,8 @@ public class UserService {
         return loginHistoryRepository.findAll();
     }
 
+    public List<User> unAuthUser() {
+
+
+    }
 }

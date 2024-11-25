@@ -1,8 +1,10 @@
 package com.grolabs.caselist.repository;
 
 import com.grolabs.caselist.entity.User;
+import com.grolabs.caselist.entity.enums.AuthStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 //CRUD함수를 JpaRepository가 들고 잇음.
@@ -10,7 +12,8 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Integer> {
     //findBy규칙 -> Username문법
     //select * from user where username = ? (<-username)
-    public User findByUsername(String username);
+    User findByUsername(String username);
+    List<User> findAllByAuthStatus(AuthStatus authStatus);
 
     Optional<User> findByEmail(String email);
     Optional<User> findByResetToken(String resetToken);
