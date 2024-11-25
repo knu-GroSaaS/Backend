@@ -73,8 +73,8 @@ public class SecurityConfig {
                 .addFilterBefore(new JWTLogoutFilter(jwtUtil, refreshEntityRepository, loginHistoryRepository), LogoutFilter.class)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/user/**", "/manager").hasRole("USER")
-                        //.requestMatchers("/manager/**").hasRole("ADMIN")
+                        .requestMatchers("/user/**").hasRole("USER")
+                        .requestMatchers("/manager/**").hasRole("ADMIN")
                         .requestMatchers("/api/auth/refresh").permitAll()
                         .anyRequest().permitAll()
 

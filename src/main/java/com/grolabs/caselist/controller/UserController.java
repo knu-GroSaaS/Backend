@@ -36,7 +36,7 @@ public class UserController {
     }
 
 
-    @GetMapping("/manager/getuser")
+    @GetMapping("/getuser")
     public User getUser(HttpServletRequest request) {
         return userService.getUser(request);
     }
