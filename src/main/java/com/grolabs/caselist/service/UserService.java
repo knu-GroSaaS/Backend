@@ -221,6 +221,7 @@ public class UserService {
 
         return userCreateHistoryRepository.findByUserUsername(username);
     }
+
      /**
      * Return All UserCreate History
      *
@@ -231,7 +232,7 @@ public class UserService {
     }
 
     /**
-     * Return All UserCreate History
+     * Return All UserDelete History
      *
      * @return List<UserDeleteHistory>
      */
