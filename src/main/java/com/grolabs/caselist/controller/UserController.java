@@ -86,4 +86,9 @@ public class UserController {
         return userService.findAllHistory();
     }
 
+    @GetMapping("/manager/auth")
+    public List<User> unAuthUser() {
+        return userService.unAuthUser();
+    }
+
 }
