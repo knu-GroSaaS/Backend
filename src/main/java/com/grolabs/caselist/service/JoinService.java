@@ -133,4 +133,23 @@ public class JoinService {
             return true;
         }
     }
+
+    public void managerJoin(JoinDto joinDto) {
+        User user = new User();
+        user.setUsername(joinDto.getUsername());
+        user.setPassword(passwordEncoder.encode(joinDto.getUsername()));//Username과 동일한 값
+        user.setEmail(joinDto.getEmail());
+        user.setPhoneNum(joinDto.getPhoneNum());
+        user.setSite(joinDto.getSite());
+        user.setStatus(UserStatus.INACTIVE);
+        user.setPasswordUpdateTime(LocalDateTime.now());
+        user.setUsertype("ROLE_MANAGER");
+
+        if(userRepository.existsByUsername(joinDto.getUsername())){
+            throw new IllegalArgumentException("아이디 중복을 확인해주세요.");
+        }
+        else{
+            userRepository.save(user);
+        }
+    }
 }

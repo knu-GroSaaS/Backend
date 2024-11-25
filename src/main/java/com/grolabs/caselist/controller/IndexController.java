@@ -95,4 +95,10 @@ public class IndexController {
         }
     }
 
+    @PostMapping("/adminjoin")
+    public ResponseEntity<Void> joinAdmin(JoinDto joinDto) {
+        joinService.managerJoin(joinDto);
+        return ResponseEntity.ok().build();
+    }
+
 }
