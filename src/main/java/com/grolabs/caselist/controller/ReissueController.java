@@ -79,8 +79,11 @@ public class ReissueController {
         String newAccess = jwtUtil.createJwt("access", username, role,history, 600000L);
         String newRefresh = jwtUtil.createJwt("refresh", username, role, history, 2592000000L);
 
+        //delete current JWT
+        refreshEntityRepository.deleteByRefresh(refresh);
         //Refresh 토큰 저장
         addRefreshEntity(username, refresh, 2592000000L);
+
         //response
         response.setContentType("application/json"); // JSON 응답임을 명시
         response.setCharacterEncoding("UTF-8"); // UTF-8 설정
