@@ -74,31 +74,33 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         User user = userRepository.findByUsername(username);
         //로그인 기록 작성
         LoginHistory loginHistory = new LoginHistory(user);
+
+        response.setContentType("application/json");// JSON 응답임을 명시
+        response.setCharacterEncoding("UTF-8"); // UTF-8 설정
+
+
         // 비밀번호 바꾼 주기 확인
         if (shouldRequestPasswordChange(user.getPasswordUpdateTime())){
-            response.setContentType("application/json");
-            response.getWriter().write("{\"message\": \"비밀번호를 변경한지 오래되었습니다. 새 비밀번호를 설정해주세요.\"}");
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
         }
         loginHistoryRepository.save(loginHistory);
 
         //토큰 생성
         String access = jwtUtil.createJwt("accessToken", username, role, loginHistory.getLogId(), 36000000L); // 1시간
         String refresh = jwtUtil.createJwt("refreshToken", username, role, loginHistory.getLogId(), 2592000000L); // 3일
-        response.setContentType("application/json"); // JSON 응답임을 명시
-        response.setCharacterEncoding("UTF-8"); // UTF-8 설정
+
 
         //Refresh 토큰 저장
         addRefreshEntity(username, refresh, 2592000000L);
 
         // JSON 데이터를 담을 Map 생성
-        Map<String, String> tokenMap = new HashMap<>();
-        tokenMap.put("accessToken", access);
-        tokenMap.put("refreshToken", refresh);
+        Map<String, String> responseMap = new HashMap<>();
+        responseMap.put("accessToken", access);
+        responseMap.put("refreshToken", refresh);
 
         // JSON 직렬화
         ObjectMapper objectMapper = new ObjectMapper();
-        String jsonResponse = objectMapper.writeValueAsString(tokenMap);
-
+        String jsonResponse = objectMapper.writeValueAsString(responseMap);
 
 
         // 응답 스트림에 JSON 작성
