@@ -95,6 +95,16 @@ public class IndexController {
         }
     }
 
+    /**
+     * admin join api
+     *
+     * @param joinDto A DTO containing the following fields:
+     *                - username
+     *                - email
+     *                - phoneNum
+     *                - site
+     * @return ResponseEntity<Void>
+     */
     @PostMapping("/adminjoin")
     public ResponseEntity<Void> joinAdmin(JoinDto joinDto) {
         joinService.managerJoin(joinDto);

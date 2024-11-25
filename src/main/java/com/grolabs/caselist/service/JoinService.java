@@ -134,11 +134,24 @@ public class JoinService {
         }
     }
 
+    /**
+     * admin join method
+     *
+     * @param joinDto A DTO containing the following fields:
+     *                - username
+     *                - email
+     *                - phoneNum
+     *                - site
+     */
     public void managerJoin(JoinDto joinDto) {
         User user = new User();
         user.setUsername(joinDto.getUsername());
         user.setPassword(passwordEncoder.encode(joinDto.getUsername()));//Username과 동일한 값
-        user.setEmail(joinDto.getEmail());
+        if(checkDuplication("email",joinDto.getEmail())){
+            user.setEmail(joinDto.getEmail());
+        } else{
+            throw new IllegalArgumentException("이메일 중복을 확인해주세요.");
+        }
         user.setPhoneNum(joinDto.getPhoneNum());
         user.setSite(joinDto.getSite());
         user.setStatus(UserStatus.INACTIVE);
