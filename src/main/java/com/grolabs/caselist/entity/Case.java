@@ -71,5 +71,6 @@ public class Case {
         this.caseStatus = NOT_STARTED;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
+        this.user = user;
     }
 }

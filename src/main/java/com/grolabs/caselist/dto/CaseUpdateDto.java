@@ -19,6 +19,4 @@ public class CaseUpdateDto {
 
     private String severity;
 
-    private Long userId;
-
 }
