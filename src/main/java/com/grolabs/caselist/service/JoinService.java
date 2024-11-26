@@ -4,6 +4,7 @@ package com.grolabs.caselist.service;
 import com.grolabs.caselist.dto.JoinDto;
 import com.grolabs.caselist.dto.PasswordEditDto;
 import com.grolabs.caselist.entity.User;
+import com.grolabs.caselist.entity.enums.AuthStatus;
 import com.grolabs.caselist.entity.enums.UserStatus;
 import com.grolabs.caselist.jwt.JWTUtil;
 import com.grolabs.caselist.repository.UserRepository;
@@ -122,7 +123,7 @@ public class JoinService {
         //받아온 비밀번호와 저장된 비밀번호가 다를 경우 or 현재 비밀번호와 바꿀 비밀번호가 같을 경우 return false
         if(!passwordEncoder.matches(passwordEditDto.getCurrentPassword(),user.getPassword())|| passwordEditDto.getNewPassword().equals(passwordEditDto.getCurrentPassword())) {
             System.out.println("실패");
-            throw new IllegalArgumentException("패스워드가 다릅니다");
+            throw new IllegalArgumentException("비밀번호를 변경할 수 없습니다");
         }
         else{
             user.setPassword(passwordEncoder.encode(passwordEditDto.getNewPassword()));
@@ -131,6 +132,39 @@ public class JoinService {
             tokenService.invalidateToken(token);
             System.out.println("성공");
             return true;
+        }
+    }
+
+    /**
+     * admin join method
+     *
+     * @param joinDto A DTO containing the following fields:
+     *                - username
+     *                - email
+     *                - phoneNum
+     *                - site
+     */
+    public void managerJoin(JoinDto joinDto) {
+        User user = new User();
+        user.setUsername(joinDto.getUsername());
+        user.setPassword(passwordEncoder.encode(joinDto.getUsername()));//Username과 동일한 값
+        if(checkDuplication("email",joinDto.getEmail())){
+            user.setEmail(joinDto.getEmail());
+        } else{
+            throw new IllegalArgumentException("이메일 중복을 확인해주세요.");
+        }
+        user.setPhoneNum(joinDto.getPhoneNum());
+        user.setSite(joinDto.getSite());
+        user.setStatus(UserStatus.INACTIVE);
+        user.setPasswordUpdateTime(LocalDateTime.now());
+        user.setUsertype("ROLE_MANAGER");
+        user.setAuthStatus(AuthStatus.AUTH_OK);
+
+        if(userRepository.existsByUsername(joinDto.getUsername())){
+            throw new IllegalArgumentException("아이디 중복을 확인해주세요.");
+        }
+        else{
+            userRepository.save(user);
         }
     }
 }

@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.List;
 
@@ -199,12 +200,44 @@ public class UserService {
     }
 
     /**
-     * Return All History
+     * Return All login History
      *
      * @return List<LoginHistory>
      */
     public List<LoginHistory> findAllHistory(){
         return loginHistoryRepository.findAll();
+    }
+
+    /**
+     * find Create History by accessToken
+     *
+     * @param accessToken the JWT token in the header
+     * @return UserCreateHistory
+     */
+    public UserCreateHistory findCreateHistory(String accessToken){
+        String token = accessToken.split(" ")[1];
+        String username = jwtUtil.getUsername(token);
+        User user = userRepository.findByUsername(username);
+
+        return userCreateHistoryRepository.findByUserUsername(username);
+    }
+
+     /**
+     * Return All UserCreate History
+     *
+     * @return List<UserCreateHistory>
+     */
+    public List<UserCreateHistory> findAllCreateHistory(){
+        return userCreateHistoryRepository.findAll();
+    }
+
+    /**
+     * Return All UserDelete History
+     *
+     * @return List<UserDeleteHistory>
+     */
+    public List<UserDeleteHistory> findAllDeleteHistory(){
+        return userDeleteHistoryRepository.findAll();
     }
 
     /**

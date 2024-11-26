@@ -6,6 +6,8 @@ import com.grolabs.caselist.dto.user.UserAuthorityDto;
 import com.grolabs.caselist.dto.user.UserDeleteDto;
 import com.grolabs.caselist.entity.LoginHistory;
 import com.grolabs.caselist.entity.User;
+import com.grolabs.caselist.entity.UserCreateHistory;
+import com.grolabs.caselist.entity.UserDeleteHistory;
 import com.grolabs.caselist.repository.UserRepository;
 import com.grolabs.caselist.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -74,10 +76,11 @@ public class UserController {
      *                   - deletion: The timestamp or identifier for the user creation process.
      * @return ResponseEntity<String> A response containing a success message.
      * */
-    @DeleteMapping("/delete")
+    @DeleteMapping("/manager/delete")
     public ResponseEntity<String> deleteUser(@RequestBody UserDeleteDto userDeleteDto){
         return ResponseEntity.ok(userService.UserDelete(userDeleteDto));
     }
+
     /**
      * Find loginHistory User
      * Handles HTTP POST requests to find user history in DB.
@@ -91,7 +94,7 @@ public class UserController {
     }
 
     /**
-     * find all history in login history table
+     * find all login history in login history table
      *
      * @return List<LoginHistory>
      */
@@ -99,6 +102,27 @@ public class UserController {
     public List<LoginHistory> findAllHistory(){
         return userService.findAllHistory();
     }
+
+    /**
+     * find all user create history in user create history table
+     *
+     * @return List<UserCreateHistory>
+     */
+    @GetMapping("/manager/createhis")
+    public List<UserCreateHistory> findAllCreateHistory(){
+        return userService.findAllCreateHistory();
+    }
+
+    /**
+     * find all user delete history in user delete history table
+     *
+     * @return List<UserDeleteHistory>
+     */
+    @GetMapping("/manager/deletehis")
+    public List<UserDeleteHistory> findAllDeleteHistory(){
+        return userService.findAllDeleteHistory();
+    }
+
 
     /**
      * find all unAuthUser in User table
