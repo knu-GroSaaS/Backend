@@ -38,16 +38,15 @@ public class UserController {
     }
 
 
-  /**
+    /**
      * Retrieve Dashboard User
      *
      * Handles HTTP GET requests to retrieve the user associated with the provided JWT token in the request header.
      * The token is used to identify and authenticate the user, ensuring secure access to the dashboard user information.
      *
-     * @param request The HTTP request containing the JWT token in the header
+     * @param accessToken
      * @return User
-     * */
-
+     */
     @GetMapping("/getuser")
     public User getUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken) {
         System.out.println(accessToken);
