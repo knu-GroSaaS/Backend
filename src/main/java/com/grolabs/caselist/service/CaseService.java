@@ -1,5 +1,6 @@
 package com.grolabs.caselist.service;
 
+import com.grolabs.caselist.dto.CaseGetDto;
 import com.grolabs.caselist.dto.CaseStatusUpdateDto;
 import com.grolabs.caselist.entity.Case;
 import com.grolabs.caselist.entity.User;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -53,9 +55,13 @@ public class CaseService {
      * Get All Cases
      * @return Cases List
      */
-    public List<Case> getAllCases() {
-
-        return caseRepository.findAll();
+    public List<CaseGetDto> getAllCases() {
+        List<Case> AllCases = caseRepository.findAll();
+        List<CaseGetDto> cases = new ArrayList<>();
+        for (Case aCase : AllCases) {
+            cases.add(new CaseGetDto(aCase, aCase.getUser()));
+        }
+        return cases;
     }
 
     /**
