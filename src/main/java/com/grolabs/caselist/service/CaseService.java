@@ -53,7 +53,8 @@ public class CaseService {
 
     /**
      * Get All Cases
-     * @return Cases List
+     *
+     * @return List<CaseGetDto> caseId, problemTitle, product, version, serialNumber, severity, user_id, createAt, caseStatus
      */
     public List<CaseGetDto> getAllCases() {
         List<Case> AllCases = caseRepository.findAll();
