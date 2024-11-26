@@ -25,7 +25,12 @@ public class IndexController {
 
     private final JoinService joinService;
 
-
+    /**
+     * duplicate check api
+     * @param type type of value
+     * @param value value
+     * @return ResponseEntity<Boolean> A response containing a success message
+     * **/
     @PostMapping("/join/dupli")
     public ResponseEntity<Boolean> checkDuplicate(
             @RequestParam String type,//username or email
@@ -38,19 +43,49 @@ public class IndexController {
         return ResponseEntity.ok(joinService.checkDuplication(type, value));
     }
 
-
+    /**
+     * join api
+     *
+     * @param joinDto A DTO containing the following fields:
+     *                - username
+     *                - email
+     *                - phoneNum
+     *                - site
+     * @return ResponseEntity<Void>
+     */
     @PostMapping("/join")
     public ResponseEntity<Void> join(JoinDto joinDto) throws CloneNotSupportedException {
         joinService.joinUser(joinDto);
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Password Request api
+     *
+     * Processes the user's request to change their password or perform related actions.
+     *
+     * @param accessToken The JWT token used for user authentication (provided in the Authorization header)
+     * @return String
+     *     - A message indicating whether the password request was successful or failed
+     */
     @PostMapping("/password")
     public String requestPassword(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken){
         return joinService.requestPassword(accessToken);
     }
 
-    @PostMapping("/password/update")
+    /**
+     *update password api
+     *
+     * @param token email
+     * @param passwordEditDto A DTO containing the following fields:
+     *                        - username
+     *                        - currentPassword
+     *                        - newPassword
+     * @return ResponseEntity<Void>
+     *     - success updatePassword -> ok code
+     *     - fail updatePassword -> bad code
+     */
+    @PutMapping("/password/update")
     public ResponseEntity<Void> updatePassword(@RequestParam String token, PasswordEditDto passwordEditDto) {
         if(joinService.updatePassword(token, passwordEditDto)) {
             return ResponseEntity.ok().build();
@@ -58,6 +93,22 @@ public class IndexController {
         else{
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    /**
+     * admin join api
+     *
+     * @param joinDto A DTO containing the following fields:
+     *                - username
+     *                - email
+     *                - phoneNum
+     *                - site
+     * @return ResponseEntity<Void>
+     */
+    @PostMapping("/adminjoin")
+    public ResponseEntity<Void> joinAdmin(JoinDto joinDto) {
+        joinService.managerJoin(joinDto);
+        return ResponseEntity.ok().build();
     }
 
 }

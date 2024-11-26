@@ -4,6 +4,7 @@ package com.grolabs.caselist.service;
 import com.grolabs.caselist.dto.JoinDto;
 import com.grolabs.caselist.dto.PasswordEditDto;
 import com.grolabs.caselist.entity.User;
+import com.grolabs.caselist.entity.enums.AuthStatus;
 import com.grolabs.caselist.entity.enums.UserStatus;
 import com.grolabs.caselist.jwt.JWTUtil;
 import com.grolabs.caselist.repository.UserRepository;
@@ -28,6 +29,16 @@ public class JoinService {
     private final EmailService emailService;
     private final JWTUtil jwtUtil;
 
+
+    /**
+     * join method
+     *
+     * @param joinDto A DTO containing the following fields:
+     *                - username
+     *                - email
+     *                - phoneNum
+     *                - site
+     */
     public void joinUser(JoinDto joinDto) throws CloneNotSupportedException {
         System.out.println(joinDto);
         User user = new User();
@@ -47,6 +58,13 @@ public class JoinService {
         }
     }
 
+    /**
+     * check duplication
+     *
+     * @param type type of value (email or username)
+     * @param value value to be checked for duplication
+     * @return boolean
+     */
     public boolean checkDuplication(String type, String value) {
         boolean exists;
         if ("username".equals(type)) {
@@ -60,6 +78,12 @@ public class JoinService {
     }
 
 
+    /**
+     * Sends an email with a password change token.
+     *
+     * @param accessToken The JWT access token provided in the request header to identify the user.
+     * @return String
+     */
     public String requestPassword(String accessToken) {
         String usertoken = accessToken.split(" ")[1];
 
@@ -74,6 +98,16 @@ public class JoinService {
         return "비밀번호 재설정 이메일이 전송되었습니다.";
     }
 
+    /**
+     * Updates the User's password after validating the reset token and input details.
+     *
+     * @param token A password reset token to validate the user's identity.
+     * @param passwordEditDto A DTO containing the following fields:
+     *                        - username
+     *                        - currentPassword
+     *                        - newPassword
+     * @return boolean
+     */
     public boolean updatePassword(String token, PasswordEditDto passwordEditDto) {
 
         String email = tokenService.validateToken(token);
@@ -89,7 +123,7 @@ public class JoinService {
         //받아온 비밀번호와 저장된 비밀번호가 다를 경우 or 현재 비밀번호와 바꿀 비밀번호가 같을 경우 return false
         if(!passwordEncoder.matches(passwordEditDto.getCurrentPassword(),user.getPassword())|| passwordEditDto.getNewPassword().equals(passwordEditDto.getCurrentPassword())) {
             System.out.println("실패");
-            throw new IllegalArgumentException("패스워드가 다릅니다");
+            throw new IllegalArgumentException("비밀번호를 변경할 수 없습니다");
         }
         else{
             user.setPassword(passwordEncoder.encode(passwordEditDto.getNewPassword()));
@@ -98,6 +132,39 @@ public class JoinService {
             tokenService.invalidateToken(token);
             System.out.println("성공");
             return true;
+        }
+    }
+
+    /**
+     * admin join method
+     *
+     * @param joinDto A DTO containing the following fields:
+     *                - username
+     *                - email
+     *                - phoneNum
+     *                - site
+     */
+    public void managerJoin(JoinDto joinDto) {
+        User user = new User();
+        user.setUsername(joinDto.getUsername());
+        user.setPassword(passwordEncoder.encode(joinDto.getUsername()));//Username과 동일한 값
+        if(checkDuplication("email",joinDto.getEmail())){
+            user.setEmail(joinDto.getEmail());
+        } else{
+            throw new IllegalArgumentException("이메일 중복을 확인해주세요.");
+        }
+        user.setPhoneNum(joinDto.getPhoneNum());
+        user.setSite(joinDto.getSite());
+        user.setStatus(UserStatus.INACTIVE);
+        user.setPasswordUpdateTime(LocalDateTime.now());
+        user.setUsertype("ROLE_MANAGER");
+        user.setAuthStatus(AuthStatus.AUTH_OK);
+
+        if(userRepository.existsByUsername(joinDto.getUsername())){
+            throw new IllegalArgumentException("아이디 중복을 확인해주세요.");
+        }
+        else{
+            userRepository.save(user);
         }
     }
 }

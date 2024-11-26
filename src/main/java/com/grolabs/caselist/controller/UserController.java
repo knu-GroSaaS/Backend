@@ -6,6 +6,8 @@ import com.grolabs.caselist.dto.user.UserAuthorityDto;
 import com.grolabs.caselist.dto.user.UserDeleteDto;
 import com.grolabs.caselist.entity.LoginHistory;
 import com.grolabs.caselist.entity.User;
+import com.grolabs.caselist.entity.UserCreateHistory;
+import com.grolabs.caselist.entity.UserDeleteHistory;
 import com.grolabs.caselist.repository.UserRepository;
 import com.grolabs.caselist.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,11 +38,23 @@ public class UserController {
     }
 
 
+  /**
+     * Retrieve Dashboard User
+     *
+     * Handles HTTP GET requests to retrieve the user associated with the provided JWT token in the request header.
+     * The token is used to identify and authenticate the user, ensuring secure access to the dashboard user information.
+     *
+     * @param request The HTTP request containing the JWT token in the header
+     * @return User
+     * */
+
     @GetMapping("/getuser")
     public User getUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken) {
         System.out.println(accessToken);
         return userService.getUser(accessToken);
+    
     }
+
     /**
     * Add Dashboard User
     * Handles HTTP POST requests to add a new user to the dashboard.
@@ -66,10 +80,11 @@ public class UserController {
      *                   - deletion: The timestamp or identifier for the user creation process.
      * @return ResponseEntity<String> A response containing a success message.
      * */
-    @DeleteMapping("/delete")
+    @DeleteMapping("/manager/delete")
     public ResponseEntity<String> deleteUser(@RequestBody UserDeleteDto userDeleteDto){
         return ResponseEntity.ok(userService.UserDelete(userDeleteDto));
     }
+
     /**
      * Find loginHistory User
      * Handles HTTP POST requests to find user history in DB.
@@ -82,16 +97,53 @@ public class UserController {
         return userService.findHistory(accessToken);
     }
 
+    /**
+     * find all login history in login history table
+     *
+     * @return List<LoginHistory>
+     */
     @GetMapping("/manager/loghistory")
     public List<LoginHistory> findAllHistory(){
         return userService.findAllHistory();
     }
 
+    /**
+     * find all user create history in user create history table
+     *
+     * @return List<UserCreateHistory>
+     */
+    @GetMapping("/manager/createhis")
+    public List<UserCreateHistory> findAllCreateHistory(){
+        return userService.findAllCreateHistory();
+    }
+
+    /**
+     * find all user delete history in user delete history table
+     *
+     * @return List<UserDeleteHistory>
+     */
+    @GetMapping("/manager/deletehis")
+    public List<UserDeleteHistory> findAllDeleteHistory(){
+        return userService.findAllDeleteHistory();
+    }
+
+
+    /**
+     * find all unAuthUser in User table
+     *
+     * @return List<User>
+     */
     @GetMapping("/manager/auth")
     public List<User> unAuthUser() {
         return userService.unAuthUser();
     }
 
+    /**
+     * modify User Authentication (No_AUTH -> AUTH_OK)
+     *
+     * @param userId userId of User to be modified
+     * @return ResponseEntity<String>
+     */
     @PostMapping("/manager/auth/{userId}")
     public ResponseEntity<String> modifyUnAuthUser(@PathVariable Long userId){
 

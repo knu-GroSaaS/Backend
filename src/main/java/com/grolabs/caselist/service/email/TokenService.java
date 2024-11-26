@@ -16,6 +16,12 @@ public class TokenService {
     @Autowired
     private UserRepository userRepository;
 
+    /**
+     * generate token
+     *
+     * @param email to receive token
+     * @return String token
+     */
     public String generateToken(String email) {
         Optional<User> optionalUser = userRepository.findByEmail(email);
 
@@ -35,6 +41,12 @@ public class TokenService {
         return token;
     }
 
+    /**
+     * validate token
+     *
+     * @param token to verify
+     * @return String email
+     */
     public String validateToken(String token) {
         Optional<User> optionalUser = userRepository.findByResetToken(token);
 
@@ -54,6 +66,11 @@ public class TokenService {
         return user.getEmail(); // 유효한 토큰의 이메일 반환
     }
 
+    /**
+     *Invalidates a reset token.
+     *
+     * @param token the reset token to be invalidated
+     */
     public void invalidateToken(String token) {
         Optional<User> optionalUser = userRepository.findByResetToken(token);
 
