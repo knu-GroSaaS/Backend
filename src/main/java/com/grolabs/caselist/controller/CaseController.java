@@ -33,7 +33,7 @@ public class CaseController {
 
     /**
      * Get All Cases
-     * @return Cases List
+     * @return List<CaseGetDto> caseId, problemTitle, product, version, serialNumber, severity, user_id, createAt, caseStatus
      */
     @GetMapping
     public List<CaseGetDto> getAllCases() {
