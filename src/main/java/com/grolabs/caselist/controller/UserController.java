@@ -37,8 +37,9 @@ public class UserController {
 
 
     @GetMapping("/getuser")
-    public User getUser(HttpServletRequest request) {
-        return userService.getUser(request);
+    public User getUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken) {
+        System.out.println(accessToken);
+        return userService.getUser(accessToken);
     }
     /**
     * Add Dashboard User
