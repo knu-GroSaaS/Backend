@@ -1,6 +1,7 @@
 package com.grolabs.caselist.controller;
 
 import com.grolabs.caselist.dto.CaseCreateDto;
+import com.grolabs.caselist.dto.CaseGetDto;
 import com.grolabs.caselist.dto.CaseStatusUpdateDto;
 import com.grolabs.caselist.entity.Case;
 import com.grolabs.caselist.entity.enums.CaseStatus;
@@ -27,16 +28,15 @@ public class CaseController {
      */
     @PostMapping
     public String createCase(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken, @RequestBody CaseCreateDto requestDto) {
-
         return caseService.createCase(accessToken, requestDto);
     }
 
     /**
      * Get All Cases
-     * @return Cases List
+     * @return List<CaseGetDto> caseId, problemTitle, product, version, serialNumber, severity, user_id, createAt, caseStatus
      */
     @GetMapping
-    public List<Case> getAllCases() {
+    public List<CaseGetDto> getAllCases() {
         return caseService.getAllCases();
     }
 
@@ -47,7 +47,6 @@ public class CaseController {
      */
     @GetMapping("/{caseId}")
     public Case getCase(@PathVariable Long caseId) {
-
         return caseService.getCase(caseId);
     }
 
