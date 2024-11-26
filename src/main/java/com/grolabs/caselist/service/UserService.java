@@ -73,17 +73,19 @@ public class UserService {
     }
 
 
-    /**
+
+  /**
      * get User
      *
      * @param request The HTTP request containing the JWT token in the header
      * @return User
      */
-    public User getUser(HttpServletRequest request){
-        String authorization = request.getHeader("Authorization");
-        String token = authorization.split(" ")[1];
+    public User getUser(String request){
+        System.out.println(request);
+        String token = request.split(" ")[1];
 
         String username = jwtUtil.getUsername(token);
+
 
         return userRepository.findByUsername(username);
     }

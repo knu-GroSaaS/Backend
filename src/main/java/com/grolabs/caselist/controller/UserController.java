@@ -37,7 +37,8 @@ public class UserController {
         return userRepository.findAll();
     }
 
-    /**
+
+  /**
      * Retrieve Dashboard User
      *
      * Handles HTTP GET requests to retrieve the user associated with the provided JWT token in the request header.
@@ -46,9 +47,12 @@ public class UserController {
      * @param request The HTTP request containing the JWT token in the header
      * @return User
      * */
-    @GetMapping("/manager/getuser")
-    public User getUser(HttpServletRequest request) {
-        return userService.getUser(request);
+
+    @GetMapping("/getuser")
+    public User getUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken) {
+        System.out.println(accessToken);
+        return userService.getUser(accessToken);
+    
     }
 
     /**
