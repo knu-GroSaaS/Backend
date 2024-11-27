@@ -6,6 +6,7 @@ import com.grolabs.caselist.dto.user.CustomUserDetails;
 import com.grolabs.caselist.entity.LoginHistory;
 import com.grolabs.caselist.entity.RefreshEntity;
 import com.grolabs.caselist.entity.User;
+import com.grolabs.caselist.exception.costom.PasswordException;
 import com.grolabs.caselist.repository.LoginHistoryRepository;
 import com.grolabs.caselist.repository.RefreshEntityRepository;
 import com.grolabs.caselist.repository.UserRepository;
@@ -81,7 +82,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         // 비밀번호 바꾼 주기 확인
         if (shouldRequestPasswordChange(user.getPasswordUpdateTime())){
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            throw new PasswordException("비밀번호를 변경해주세요.");
         }
         loginHistoryRepository.save(loginHistory);
 
