@@ -81,7 +81,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         // 비밀번호 바꾼 주기 확인
         if (shouldRequestPasswordChange(user.getPasswordUpdateTime())){
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            response.setStatus(210); // 210코드 반환
         }
         loginHistoryRepository.save(loginHistory);
 
@@ -129,9 +129,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // 현재 시간
         LocalDateTime now = LocalDateTime.now();
 
-        // 1분이 지났는지 확인
+        // 5분이 지났는지 확인
         Duration duration = Duration.between(passwordUpdateTime, now);
-        return duration.toMinutes() >= 1; // 1분 이상 경과 여부
+        return duration.toMinutes() >= 5; // 5분 이상 경과 여부
     }
 
 //    private Cookie createCookie(String key, String value) {
