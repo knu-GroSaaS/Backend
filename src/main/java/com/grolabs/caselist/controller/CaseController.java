@@ -43,10 +43,10 @@ public class CaseController {
     /**
      * Get One Case
      * @param caseId CaseId of the case to be found
-     * @return case
+     * @return CaseGetDto
      */
     @GetMapping("/{caseId}")
-    public Case getCase(@PathVariable Long caseId) {
+    public CaseGetDto getCase(@PathVariable Long caseId) {
         return caseService.getCase(caseId);
     }
 

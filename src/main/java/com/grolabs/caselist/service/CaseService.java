@@ -68,12 +68,12 @@ public class CaseService {
     /**
      * Get One Case
      * @param caseId CaseId of the case to be found
-     * @return case
+     * @return CaseGetDto
      */
-    public Case getCase(Long caseId) {
-
-        return caseRepository.findById(caseId)
+    public CaseGetDto getCase(Long caseId) {
+        Case currentcase= caseRepository.findById(caseId)
                 .orElseThrow(() -> new NoSuchElementException(BOARD_NOT_FOUND));
+        return new CaseGetDto(currentcase, currentcase.getUser());
     }
 
     /**
