@@ -6,6 +6,7 @@ import com.grolabs.caselist.dto.user.CustomUserDetails;
 import com.grolabs.caselist.entity.LoginHistory;
 import com.grolabs.caselist.entity.RefreshEntity;
 import com.grolabs.caselist.entity.User;
+import com.grolabs.caselist.exception.costom.PasswordException;
 import com.grolabs.caselist.repository.LoginHistoryRepository;
 import com.grolabs.caselist.repository.RefreshEntityRepository;
 import com.grolabs.caselist.repository.UserRepository;

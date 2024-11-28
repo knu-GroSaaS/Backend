@@ -1,5 +1,6 @@
 package com.grolabs.caselist.exception;
 
+import com.grolabs.caselist.exception.costom.PasswordException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -8,7 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.util.NoSuchElementException;
 
 @ControllerAdvice
-public class GlobalExcetionHandler {
+public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<String> handleNoSuchElementException(NoSuchElementException ex) {
@@ -31,5 +32,11 @@ public class GlobalExcetionHandler {
                 .body(ex.getMessage());       // 예외 메시지 반환
     }
 
+    @ExceptionHandler(PasswordException.class)
+    public ResponseEntity<String> handlePasswordException(PasswordException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ex.getMessage());
+    }
 
 }
