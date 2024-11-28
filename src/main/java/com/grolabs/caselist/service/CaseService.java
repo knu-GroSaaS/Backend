@@ -168,6 +168,7 @@ public class CaseService {
         // 필드에 해당 키워드가 포함되어 있는지 검사
         return (c.getProduct() != null && c.getProduct().contains(keyword)) ||
                 (c.getVersion() != null && c.getVersion().contains(keyword)) ||
-                (c.getProblemTitle() != null && c.getProblemTitle().contains(keyword));
+                (c.getProblemTitle() != null && c.getProblemTitle().contains(keyword)) ||
+                (c.getSeverity() != null && c.getSeverity().contains(keyword));
     }
 }
