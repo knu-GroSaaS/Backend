@@ -82,7 +82,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         // 비밀번호 바꾼 주기 확인
         if (shouldRequestPasswordChange(user.getPasswordUpdateTime())){
-            throw new PasswordException("패스워드를 변경해주세요."); // 210코드 반환
+            response.setStatus(210); // 210코드 반환
         }
         loginHistoryRepository.save(loginHistory);
 
