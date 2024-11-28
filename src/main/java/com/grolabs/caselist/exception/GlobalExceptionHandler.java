@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(PasswordException.class)
     public ResponseEntity<String> handlePasswordException(PasswordException ex) {
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(210)
                 .body(ex.getMessage());
     }
 
