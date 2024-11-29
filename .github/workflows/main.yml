@@ -1,4 +1,4 @@
-name: Build and Deploy Spring Boot App
+name: Build, Deploy and Run Spring Boot App
 
 on:
   push:
@@ -7,42 +7,52 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest  # 최신 Ubuntu 버전에서 실행
+    runs-on: ubuntu-latest
 
     steps:
-      # Git 체크아웃
-    - name: Checkout code
-      uses: actions/checkout@v2
+      # 1. 코드 체크아웃
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      # Java 및 Maven 설정
-    - name: Set up JDK 17
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'temurin'
+      # 2. JDK 설정
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
 
-      # 의존성 설치 및 빌드
-    - name: Build Spring Boot App
-      run: |
-        ./mvnw clean package -DskipTests
+      # 3. Gradle Wrapper 실행 권한 부여
+      - name: Ensure Gradle Wrapper is executable
+        run: chmod +x gradlew
 
-      # sshpass 설치
-    - name: Install sshpass
-      run: sudo apt-get install -y sshpass
+      # 4. 애플리케이션 빌드
+      - name: Build Spring Boot App
+        run: ./gradlew clean build -x test
 
-      # 원격 서버에 디렉토리 생성
-    - name: Deploy to Server - Create Directory
-      run: |
-        sshpass -p "${{ secrets.PASSWORD }}" ssh -o StrictHostKeyChecking=no -p 50 admin@${{ secrets.HOST }} "mkdir -p /opt/springboot"
+      # 5. sshpass 설치
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
 
-      # 빌드한 .jar 파일을 원격 서버로 전송
-    - name: Deploy to Server - Copy JAR File
-      run: |
-        sshpass -p "${{ secrets.PASSWORD }}" scp -o StrictHostKeyChecking=no -P 50 target/*.jar admin@${{ secrets.HOST }}:/opt/springboot/app.jar
+      # 6. 원격 서버에 디렉토리 생성
+      - name: Deploy to Server - Create Directory
+        run: |
+          sshpass -p "${{ secrets.PASSWORD }}" ssh -o StrictHostKeyChecking=no -p 50 admin@${{ secrets.HOST }} "mkdir -p /opt/springboot"
 
-      # 기존 프로세스 종료 및 애플리케이션 실행
-    - name: Deploy to Server - Restart Application
-      run: |
-        sshpass -p "${{ secrets.PASSWORD }}" ssh -o StrictHostKeyChecking=no -p 50 admin@${{ secrets.HOST }} "
-        pkill -f 'java -jar' || echo 'No existing process to kill';
-        nohup java -jar /opt/springboot/app.jar > /opt/springboot/app.log 2>&1 &"
+      # 7. 빌드된 JAR 파일을 원격 서버로 복사
+      - name: Deploy to Server - Copy JAR File
+        run: |
+          sshpass -p "${{ secrets.PASSWORD }}" scp -o StrictHostKeyChecking=no -P 50 build/libs/*.jar admin@${{ secrets.HOST }}:/opt/springboot/app.jar
+
+      # 8. 기존 애플리케이션 종료 및 새 JAR 실행
+      - name: Restart and Run Application
+        run: |
+          sshpass -p "${{ secrets.PASSWORD }}" ssh -o StrictHostKeyChecking=no -p 50 admin@${{ secrets.HOST }} "
+          pkill -f 'java -jar /opt/springboot/app.jar' || echo 'No existing process to kill';
+          nohup java -jar /opt/springboot/app.jar > /opt/springboot/app.log 2>&1 &"
+
+      # 9. 애플리케이션 상태 확인
+      - name: Check Application Status
+        run: |
+          sshpass -p "${{ secrets.PASSWORD }}" ssh -o StrictHostKeyChecking=no -p 50 admin@${{ secrets.HOST }} "
+          sleep 5; # 애플리케이션 실행 대기
+          ps aux | grep 'java -jar /opt/springboot/app.jar'"
