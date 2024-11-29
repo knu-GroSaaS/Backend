@@ -36,8 +36,8 @@ public class CaseController {
      * @return List<CaseGetDto> caseId, problemTitle, product, version, serialNumber, severity, user_id, createAt, caseStatus
      */
     @GetMapping
-    public List<CaseGetDto> getAllCases() {
-        return caseService.getAllCases();
+    public List<CaseGetDto> getAllCases(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken) {
+        return caseService.getAllCases(accessToken);
     }
 
     /**

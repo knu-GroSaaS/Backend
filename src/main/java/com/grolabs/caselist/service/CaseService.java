@@ -56,8 +56,15 @@ public class CaseService {
      *
      * @return List<CaseGetDto> caseId, problemTitle, product, version, serialNumber, severity, user_id, createAt, caseStatus
      */
-    public List<CaseGetDto> getAllCases() {
-        List<Case> AllCases = caseRepository.findAll();
+    public List<CaseGetDto> getAllCases(String accessToken) {
+
+        String token = accessToken.split(" ")[1];
+        String username = jwtUtil.getUsername(token);
+
+        User user = userRepository.findByUsername(username);
+
+        List<Case> AllCases = caseRepository.findAllByUserId(user.getId());
+
         List<CaseGetDto> cases = new ArrayList<>();
         for (Case aCase : AllCases) {
             cases.add(new CaseGetDto(aCase, aCase.getUser()));
