@@ -36,7 +36,7 @@ jobs:
       # 6. 원격 서버에 디렉토리 생성
       - name: Deploy to Server - Create Directory
         run: |
-          sshpass -p "${{ secrets.PASSWORD }}" ssh -o StrictHostKeyChecking=no -p 50 admin@${{ secrets.HOST }} "mkdir -p /opt/springboot"
+            sshpass -p "${{ secrets.PASSWORD }}" ssh -o StrictHostKeyChecking=no -p 50 admin@${{ secrets.HOST }} "echo '${{ secrets.PASSWORD }}' | sudo -S mkdir -p /opt/springboot"
 
       # 7. 빌드된 JAR 파일을 원격 서버로 복사
       - name: Deploy to Server - Copy JAR File
