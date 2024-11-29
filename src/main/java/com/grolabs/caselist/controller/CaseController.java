@@ -44,6 +44,13 @@ public class CaseController {
      * Get All Cases
      * @return List<CaseGetDto> caseId, problemTitle, product, version, serialNumber, severity, user_id, createAt, caseStatus
      */
+    @Operation(
+            summary = "케이스 불러오기",
+            description = "해당 유저에 관한 모든 Case를 불러온다",
+            responses = {
+                    @ApiResponse(responseCode = "200")
+            }
+    )
     @GetMapping
     public List<CaseGetDto> getAllCases(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken) {
         return caseService.getAllCases(accessToken);
