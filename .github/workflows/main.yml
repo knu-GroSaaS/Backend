@@ -47,12 +47,12 @@ jobs:
       - name: Restart and Run Application
         run: |
           sshpass -p "${{ secrets.PASSWORD }}" ssh -o StrictHostKeyChecking=no -p 50 admin@${{ secrets.HOST }} "
-          pkill -f 'java -jar /home/admin/springboot/app.jar' || echo 'No existing process to kill';
-          nohup java -jar /home/admin/springboot/app.jar > /home/admin/springboot/app.log 2>&1 &"
+          pkill -f 'java -jar /home/admin/springboot/app.jar/caselist-0.0.1-SNAPSHOT.jar' || echo 'No existing process to kill';
+          nohup java -jar /home/admin/springboot/app.jar/caselist-0.0.1-SNAPSHOT.jar > /home/admin/springboot/app.log 2>&1 &"
 
       # 9. 애플리케이션 상태 확인
       - name: Check Application Status
         run: |
           sshpass -p "${{ secrets.PASSWORD }}" ssh -o StrictHostKeyChecking=no -p 50 admin@${{ secrets.HOST }} "
           sleep 5; # 애플리케이션 실행 대기
-          ps aux | grep 'java -jar /home/admin/springboot/app.jar'"
+          ps aux | grep 'java -jar /home/admin/springboot/app.jar/caselist-0.0.1-SNAPSHOT.jar'"
