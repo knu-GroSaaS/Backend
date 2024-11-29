@@ -1,6 +1,7 @@
 package com.grolabs.caselist.controller;
 
 
+import com.grolabs.caselist.dto.Response.GetUserResponseDto;
 import com.grolabs.caselist.dto.user.UserAddDto;
 import com.grolabs.caselist.dto.user.UserAuthorityDto;
 import com.grolabs.caselist.dto.user.UserDeleteDto;
@@ -32,9 +33,13 @@ public class UserController {
        userService.updateUserAuthority(userAuthorityDto);
     }
 
+    /**
+     * GetUserList
+     * @return List<GetUserResponseDto>
+     */
     @GetMapping("/manager")
-    public List<User> getAllUser(){
-        return userRepository.findAll();
+    public List<GetUserResponseDto> getAllUser(){
+        return userService.findAll();
     }
 
 
