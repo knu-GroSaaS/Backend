@@ -2,6 +2,7 @@ package com.grolabs.caselist.dto.Response;
 
 
 import com.grolabs.caselist.entity.User;
+import com.grolabs.caselist.entity.enums.AuthStatus;
 import com.grolabs.caselist.entity.enums.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -35,6 +36,8 @@ public class GetUserResponseDto {
 
     public LocalDateTime passwordUpdateTime;
 
+    public AuthStatus authStatus;
+
     public GetUserResponseDto(User user) {
         this.userId = user.getId();
         this.username = user.getUsername();
@@ -46,5 +49,6 @@ public class GetUserResponseDto {
         this.createTime = user.getCreateTime();
         this.updateTime = user.getUpdateTime();
         this.passwordUpdateTime = user.getPasswordUpdateTime();
+        this.authStatus = user.getAuthStatus();
     }
 }
