@@ -1,6 +1,7 @@
 package com.grolabs.caselist.service;
 
 
+import com.grolabs.caselist.dto.Response.GetUserResponseDto;
 import com.grolabs.caselist.dto.user.UserAddDto;
 import com.grolabs.caselist.dto.user.UserAuthorityDto;
 import com.grolabs.caselist.dto.user.UserDeleteDto;
@@ -27,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -264,5 +266,16 @@ public class UserService {
         user.setAuthStatus(AuthStatus.AUTH_OK);
 
         return "유저 권한을 설정했습니다.";
+    }
+
+    /**
+     * GetUserList
+     * @return List<GetUserResponseDto>
+     */
+    public List<GetUserResponseDto> findAll() {
+
+        return userRepository.findAll().stream()
+                .map(GetUserResponseDto::new)
+                .collect(Collectors.toList());
     }
 }
