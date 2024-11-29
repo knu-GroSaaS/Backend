@@ -36,23 +36,23 @@ jobs:
       # 6. 원격 서버에 디렉토리 생성
       - name: Deploy to Server - Create Directory
         run: |
-            sshpass -p "${{ secrets.PASSWORD }}" ssh -o StrictHostKeyChecking=no -p 50 admin@${{ secrets.HOST }} "echo '${{ secrets.PASSWORD }}' | sudo -S mkdir -p /opt/springboot"
+            sshpass -p "${{ secrets.PASSWORD }}" ssh -o StrictHostKeyChecking=no -p 50 admin@${{ secrets.HOST }} "echo '${{ secrets.PASSWORD }}' | sudo -S mkdir -p /home/admin/springboot/app.jar"
 
       # 7. 빌드된 JAR 파일을 원격 서버로 복사
       - name: Deploy to Server - Copy JAR File
         run: |
-          sshpass -p "${{ secrets.PASSWORD }}" scp -o StrictHostKeyChecking=no -P 50 build/libs/*.jar admin@${{ secrets.HOST }}:/opt/springboot/app.jar
+          sshpass -p "${{ secrets.PASSWORD }}" scp -o StrictHostKeyChecking=no -P 50 build/libs/*.jar admin@${{ secrets.HOST }}:/home/admin/springboot/app.jar
 
       # 8. 기존 애플리케이션 종료 및 새 JAR 실행
       - name: Restart and Run Application
         run: |
           sshpass -p "${{ secrets.PASSWORD }}" ssh -o StrictHostKeyChecking=no -p 50 admin@${{ secrets.HOST }} "
-          pkill -f 'java -jar /opt/springboot/app.jar' || echo 'No existing process to kill';
-          nohup java -jar /opt/springboot/app.jar > /opt/springboot/app.log 2>&1 &"
+          pkill -f 'java -jar /home/admin/springboot/app.jar' || echo 'No existing process to kill';
+          nohup java -jar /home/admin/springboot/app.jar > /home/admin/springboot/app.log 2>&1 &"
 
       # 9. 애플리케이션 상태 확인
       - name: Check Application Status
         run: |
           sshpass -p "${{ secrets.PASSWORD }}" ssh -o StrictHostKeyChecking=no -p 50 admin@${{ secrets.HOST }} "
           sleep 5; # 애플리케이션 실행 대기
-          ps aux | grep 'java -jar /opt/springboot/app.jar'"
+          ps aux | grep 'java -jar /home/admin/springboot/app.jar'"
