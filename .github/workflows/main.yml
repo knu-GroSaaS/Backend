@@ -37,26 +37,15 @@ jobs:
       - name: Deploy to Server - Create Directory
         run: |
             sshpass -p "${{ secrets.PASSWORD }}" ssh -o StrictHostKeyChecking=no -p 50 admin@${{ secrets.HOST }} "echo '${{ secrets.PASSWORD }}' | sudo -S mkdir -p /home/admin/springboot/"
-
-      # 7. 빌드된 JAR 파일을 원격 서버로 복사
-      - name: Deploy to Server - Copy JAR File
-        run: |
-          sshpass -p "${{ secrets.PASSWORD }}" scp -o StrictHostKeyChecking=no -P 50 build/libs/*.jar admin@${{ secrets.HOST }}:/home/admin/springboot/
-
-      # 8. 쉘 스크립트 복사
-      - name: Deploy Shell Scripts
-        run: |
-          sshpass -p "${{ secrets.PASSWORD }}" scp -o StrictHostKeyChecking=no -P 50 stop_app.sh start_app.sh admin@${{ secrets.HOST }}:/home/admin/springboot/
-          sshpass -p "${{ secrets.PASSWORD }}" ssh -o StrictHostKeyChecking=no -p 50 admin@${{ secrets.HOST }} "chmod +x /home/admin/springboot/*.sh"
-      
-      # 9. 기존 애플리케이션 종료 및 새 JAR 실행
+            
+      # 7. 기존 애플리케이션 종료 및 새 JAR 실행
       - name: Restart and Run Application
         run: |
           sshpass -p "${{ secrets.PASSWORD }}" ssh -o StrictHostKeyChecking=no -p 50 admin@${{ secrets.HOST }} "
           /home/admin/springboot/stop_app.sh;
           /home/admin/springboot/start_app.sh;"
 
-      # 9. 애플리케이션 상태 확인
+      # 8. 애플리케이션 상태 확인
       - name: Check Application Status
         run: |
           sshpass -p "${{ secrets.PASSWORD }}" ssh -o StrictHostKeyChecking=no -p 50 admin@${{ secrets.HOST }} "
