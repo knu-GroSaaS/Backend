@@ -7,6 +7,8 @@ import com.grolabs.caselist.entity.Case;
 import com.grolabs.caselist.entity.enums.CaseStatus;
 import com.grolabs.caselist.service.CaseService;
 import com.grolabs.caselist.dto.CaseUpdateDto;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -26,6 +28,13 @@ public class CaseController {
      * @param requestDto product, version, subject, description, userId (not null)
      * @return String
      */
+    @Operation(
+            summary = "케이스 생성",
+            description = "AccessToken으로 유저를 인식하고, 이에 따른 케이스를 생성하고 해당 User를 저장함",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Case Create Successfully")
+            }
+    )
     @PostMapping
     public String createCase(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken, @RequestBody CaseCreateDto requestDto) {
         return caseService.createCase(accessToken, requestDto);
