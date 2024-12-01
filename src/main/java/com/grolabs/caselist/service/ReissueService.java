@@ -76,8 +76,8 @@ public class ReissueService {
         Long history = jwtUtil.getHistory(refresh);
 
         //make new JWT
-        String newAccess = jwtUtil.createJwt("access", username, role,history, 600000L);
-        String newRefresh = jwtUtil.createJwt("refresh", username, role, history, 2592000000L);
+        String newAccess = jwtUtil.createJwt("accessToken", username, role,history, 600000L);
+        String newRefresh = jwtUtil.createJwt("refreshToken", username, role, history, 2592000000L);
 
         //delete current JWT
         refreshEntityRepository.deleteByRefresh(refresh);
