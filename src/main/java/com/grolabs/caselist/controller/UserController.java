@@ -11,6 +11,8 @@ import com.grolabs.caselist.entity.UserCreateHistory;
 import com.grolabs.caselist.entity.UserDeleteHistory;
 import com.grolabs.caselist.repository.UserRepository;
 import com.grolabs.caselist.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -28,6 +30,14 @@ public class UserController {
     private final UserService userService;
     private final UserRepository userRepository;
 
+    @Operation(
+            summary = "유저 직위 제어",
+            description = "특정 유저의 직위 매니저나 사용자로 조절한다",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "성공"),
+                    @ApiResponse(responseCode = "464", description = "사용자가 매니저 권한이 아닙니다.")
+            }
+    )
     @PutMapping("/manager/Authority")
     public void updateUserAuthority(@RequestBody UserAuthorityDto userAuthorityDto ){
        userService.updateUserAuthority(userAuthorityDto);
@@ -37,6 +47,13 @@ public class UserController {
      * GetUserList
      * @return List<GetUserResponseDto>
      */
+    @Operation(
+            summary = "모든 유저 정보 조회",
+            description = "모든 유저의 정보를 불러온다",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "성공")
+            }
+    )
     @GetMapping("/manager")
     public List<GetUserResponseDto> getAllUser(){
         return userService.findAll();
@@ -52,9 +69,15 @@ public class UserController {
      * @param accessToken
      * @return User
      */
+    @Operation(
+            summary = "자신 정보 조회",
+            description = "자기 자신의 정보를 불러온다",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "성공")
+            }
+    )
     @GetMapping("/getuser")
     public User getUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken) {
-        System.out.println(accessToken);
         return userService.getUser(accessToken);
     
     }
@@ -69,6 +92,15 @@ public class UserController {
     *                   - creation: The timestamp or identifier for the user creation process.
     * @return ResponseEntity<String> A response containing a success message.
      * */
+    @Operation(
+            summary = "유저 생성 기록 만들기",
+            description = "특정 유저를 허가해줌과 동시에 creation 정보를 생성한다.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "성공"),
+                    @ApiResponse(responseCode = "464", description = "모든 항목을 작성해주세요."),
+                    @ApiResponse(responseCode = "404", description = "해당하는 유저는 존재하지 않습니다.")
+            }
+    )
     @PostMapping("/manager")
     public ResponseEntity<String> addUser(@RequestBody UserAddDto userAddDto){
         return ResponseEntity.ok(userService.UserCreate(userAddDto));
@@ -84,6 +116,15 @@ public class UserController {
      *                   - deletion: The timestamp or identifier for the user creation process.
      * @return ResponseEntity<String> A response containing a success message.
      * */
+    @Operation(
+            summary = "유저 삭제",
+            description = "특정 유저 삭제한다.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "성공"),
+                    @ApiResponse(responseCode = "464", description = "해당 사용자는 매니저 권한이 아닙니다."),
+                    @ApiResponse(responseCode = "404", description = "해당하는 유저 및 매니저는 존재하지 않습니다.")
+            }
+    )
     @DeleteMapping("/manager/delete")
     public ResponseEntity<String> deleteUser(@RequestBody UserDeleteDto userDeleteDto){
         return ResponseEntity.ok(userService.UserDelete(userDeleteDto));

@@ -184,7 +184,7 @@ public class UserService {
             return "삭제 되었습니다.";
         }
         else{
-            return "매니저 권한이 아닙니다.";
+            throw new IllegalArgumentException("매니저 권한이 아닙니다.");
         }
     }
 
