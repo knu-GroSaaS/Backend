@@ -44,6 +44,13 @@ public class CaseController {
      * Get All Cases
      * @return List<CaseGetDto> caseId, problemTitle, product, version, serialNumber, severity, user_id, createAt, caseStatus
      */
+    @Operation(
+            summary = "모든 케이스 불러오기",
+            description = "모든 케이스를 불러옴",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "모든 케이스")
+            }
+    )
     @GetMapping
     public List<CaseGetDto> getAllCases(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken) {
         return caseService.getAllCases(accessToken);
@@ -54,6 +61,14 @@ public class CaseController {
      * @param caseId CaseId of the case to be found
      * @return CaseGetDto
      */
+    @Operation(
+            summary = "특정 케이스 확인",
+            description = "caseId를 통해 특정 케이스에 대한 정보를 불러온다",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "특정 케이스 확인"),
+                    @ApiResponse(responseCode = "404", description = "글을 찾을 수 없습니다.")
+            }
+    )
     @GetMapping("/{caseId}")
     public CaseGetDto getCase(@PathVariable Long caseId) {
         return caseService.getCase(caseId);
@@ -65,6 +80,14 @@ public class CaseController {
      * @param requestDto product, version, subject, description, userId (Optional, nullable)
      * @return
      */
+    @Operation(
+            summary = "특정 케이스 확인",
+            description = "caseId를 통해 특정 케이스에 대한 정보를 불러온다",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "성공"),
+                    @ApiResponse(responseCode = "404", description = "글을 찾을 수 없습니다.")
+            }
+    )
     @PutMapping("/{caseId}")
     public String updateCase(@PathVariable Long caseId,
                               @RequestBody CaseUpdateDto requestDto) {
@@ -77,6 +100,14 @@ public class CaseController {
      * @param caseStatus status
      * @return String
      */
+    @Operation(
+            summary = "케이스 상태 업데이트",
+            description = "특정 케이스의 상태를 사용자가 지정한다",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "성공"),
+                    @ApiResponse(responseCode = "404", description = "글을 찾을 수 없습니다.")
+            }
+    )
     @PutMapping("/{caseId}/status")
     public String updateCaseStatus(@PathVariable Long caseId,
                                    @RequestBody CaseStatusUpdateDto caseStatus) {
@@ -89,6 +120,14 @@ public class CaseController {
      * @param caseId CaseId of the case to be deleted
      * @return String
      */
+    @Operation(
+            summary = "케이스 삭제",
+            description = "특정 케이스를 삭제한다",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "성공"),
+                    @ApiResponse(responseCode = "404", description = "글을 찾을 수 없습니다.")
+            }
+    )
     @DeleteMapping("/{caseId}")
     public String deleteCase(@PathVariable Long caseId) {
 
@@ -100,6 +139,13 @@ public class CaseController {
      * @param keyWord Search from case-list with keyword
      * @return Cases List
      */
+    @Operation(
+            summary = "케이스 검색",
+            description = "keyword를 사용하여 케이스를 검색한다",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "성공")
+            }
+    )
     @GetMapping("/search")
     public List<Case> searchCase(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken, @RequestParam String keyWord) {
 
