@@ -1,6 +1,8 @@
 package com.grolabs.caselist.controller;
 
 
+import com.grolabs.caselist.dto.History.CreateHistoryDto;
+import com.grolabs.caselist.dto.History.DeleteHistoryDto;
 import com.grolabs.caselist.dto.Response.GetUserResponseDto;
 import com.grolabs.caselist.dto.user.UserAddDto;
 import com.grolabs.caselist.dto.user.UserAuthorityDto;
@@ -11,13 +13,10 @@ import com.grolabs.caselist.entity.UserCreateHistory;
 import com.grolabs.caselist.entity.UserDeleteHistory;
 import com.grolabs.caselist.repository.UserRepository;
 import com.grolabs.caselist.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestClient;
 
 import java.util.List;
 
@@ -60,15 +59,14 @@ public class UserController {
     }
 
     /**
-    * Add Dashboard User
-    * Handles HTTP POST requests to add a new user to the dashboard.
-    *
-    * @param userAddDto A DTO containing the following fields:
-    *                   - requestername: The name of the user making the request (e.g., manager).
-    *                   - username: The name of the user to be added to the dashboard.
-    *                   - creation: The timestamp or identifier for the user creation process.
-    * @return ResponseEntity<String> A response containing a success message.
-     * */
+     * Add Dashboard User
+     * Handles HTTP POST requests to add a new user to the dashboard.
+     *
+     * @param userAddDto A DTO containing the following fields:
+     *                   - requestername: The name of the user making the request (e.g., manager).
+     *                   - username: The name of the user to be added to the dashboard.
+     * @return ResponseEntity<String> A response containing a success message.
+     */
     @PostMapping("/manager")
     public ResponseEntity<String> addUser(@RequestBody UserAddDto userAddDto){
         return ResponseEntity.ok(userService.UserCreate(userAddDto));
@@ -114,20 +112,20 @@ public class UserController {
     /**
      * find all user create history in user create history table
      *
-     * @return List<UserCreateHistory>
+     * @return List<CreateHistoryDto>
      */
     @GetMapping("/manager/createhis")
-    public List<UserCreateHistory> findAllCreateHistory(){
+    public List<CreateHistoryDto> findAllCreateHistory(){
         return userService.findAllCreateHistory();
     }
 
     /**
      * find all user delete history in user delete history table
      *
-     * @return List<UserDeleteHistory>
+     * @return List<DeleteHistoryDto>
      */
     @GetMapping("/manager/deletehis")
-    public List<UserDeleteHistory> findAllDeleteHistory(){
+    public List<DeleteHistoryDto> findAllDeleteHistory(){
         return userService.findAllDeleteHistory();
     }
 

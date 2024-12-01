@@ -11,5 +11,4 @@ import lombok.NoArgsConstructor;
 public class UserAddDto {
     public String requestername;
     public String username;
-    public String creation;
 }
