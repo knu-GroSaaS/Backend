@@ -82,7 +82,7 @@ public class ReissueService {
         //delete current JWT
         refreshEntityRepository.deleteByRefresh(refresh);
         //Refresh 토큰 저장
-        addRefreshEntity(username, refresh, 2592000000L);
+        addRefreshEntity(username, newRefresh, 2592000000L);
 
         //response
         response.setContentType("application/json"); // JSON 응답임을 명시
@@ -116,7 +116,7 @@ public class ReissueService {
         refreshEntity.setUsername(username);
         refreshEntity.setRefresh(refresh);
         refreshEntity.setExpiration(date.toString());
-
+        System.out.println("refreshEntity: " + refresh);
         refreshEntityRepository.save(refreshEntity);
     }
 }
