@@ -67,7 +67,7 @@ public class UserController {
      *                   - username: The name of the user to be added to the dashboard.
      * @return ResponseEntity<String> A response containing a success message.
      */
-    @PostMapping("/manager")
+    @PostMapping("/manager/authcreate")
     public ResponseEntity<String> addUser(@RequestBody UserAddDto userAddDto){
         return ResponseEntity.ok(userService.UserCreate(userAddDto));
     }
@@ -79,10 +79,9 @@ public class UserController {
      * @param userDeleteDto A DTO containing the following fields:
      *                   - requestername: The name of the user making the request (e.g., manager).
      *                   - username: The name of the user to be added to the dashboard.
-     *                   - deletion: The timestamp or identifier for the user creation process.
      * @return ResponseEntity<String> A response containing a success message.
      * */
-    @DeleteMapping("/manager/delete")
+    @DeleteMapping("/manager/authdelete")
     public ResponseEntity<String> deleteUser(@RequestBody UserDeleteDto userDeleteDto){
         return ResponseEntity.ok(userService.UserDelete(userDeleteDto));
     }
