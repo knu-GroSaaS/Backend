@@ -15,9 +15,6 @@ public class UserCreateHistory {
     @Column(name = "requester")
     private Long requester;
 
-    @Column(name = "creation")
-    private String creation;
-
     @ManyToOne(fetch = FetchType.LAZY) // User 엔티티와 다대일 관계 설정
     @JoinColumn(name = "user_id", nullable = false) // 외래 키로 사용할 컬럼 정의
     private User user;
