@@ -1,6 +1,8 @@
 package com.grolabs.caselist.service;
 
 
+import com.grolabs.caselist.dto.History.CreateHistoryDto;
+import com.grolabs.caselist.dto.History.DeleteHistoryDto;
 import com.grolabs.caselist.dto.Response.GetUserResponseDto;
 import com.grolabs.caselist.dto.user.UserAddDto;
 import com.grolabs.caselist.dto.user.UserAuthorityDto;
@@ -109,9 +111,8 @@ public class UserService {
         }
         if(manager.getUsertype().equals("ROLE_MANAGER")){
             Long managerId = manager.getId();
-            String creation = userAddDto.getCreation();
             String username = userAddDto.getUsername();
-            if (managerId == null || creation == null || username == null) {
+            if (managerId == null || username == null) {
                 throw new IllegalArgumentException("항목을 모두 작성해 주세요");
             }
             User user = userRepository.findByUsername(username);
@@ -125,7 +126,6 @@ public class UserService {
             UserCreateHistory userCreateHistory = new UserCreateHistory();
             userCreateHistory.setRequester(managerId);
             userCreateHistory.setUser(user);
-            userCreateHistory.setCreation(creation);
             userCreateHistoryRepository.save(userCreateHistory);
 
             return "추가 되었습니다.";
@@ -175,7 +175,6 @@ public class UserService {
             UserDeleteHistory userDeleteHistory = new UserDeleteHistory();
             userDeleteHistory.setRequester(manager.getId());
             userDeleteHistory.setUser(user);
-            userDeleteHistory.setDeletion(userDeleteHistory.getDeletion());
             userDeleteHistoryRepository.save(userDeleteHistory);
 
             //email발송
@@ -209,6 +208,7 @@ public class UserService {
      * @return List<LoginHistory>
      */
     public List<LoginHistory> findAllHistory(){
+
         return loginHistoryRepository.findAll();
     }
 
@@ -229,19 +229,33 @@ public class UserService {
      /**
      * Return All UserCreate History
      *
-     * @return List<UserCreateHistory>
+     * @return List<CreateHistoryDto>
      */
-    public List<UserCreateHistory> findAllCreateHistory(){
-        return userCreateHistoryRepository.findAll();
+    public List<CreateHistoryDto> findAllCreateHistory(){
+        List<UserCreateHistory> userCreateHistorys = userCreateHistoryRepository.findAll();
+        List<CreateHistoryDto> userCreateHistoryDtos = new ArrayList<>();
+        for (UserCreateHistory userCreateHistory : userCreateHistorys) {
+            String managerName = userRepository.findById(userCreateHistory.getRequester()).get().getUsername();
+            String username = userRepository.findById(userCreateHistory.getUser().getId()).get().getUsername();
+            userCreateHistoryDtos.add(new CreateHistoryDto(managerName,username,userCreateHistory.getTime()));
+        }
+        return userCreateHistoryDtos;
     }
 
     /**
      * Return All UserDelete History
      *
-     * @return List<UserDeleteHistory>
+     * @return List<DeleteHistoryDto>
      */
-    public List<UserDeleteHistory> findAllDeleteHistory(){
-        return userDeleteHistoryRepository.findAll();
+    public List<DeleteHistoryDto> findAllDeleteHistory(){
+        List<UserDeleteHistory> userDeleteHistorys = userDeleteHistoryRepository.findAll();
+        List<DeleteHistoryDto> userDeleteHistoryDtos = new ArrayList<>();
+        for (UserDeleteHistory userDeleteHistory : userDeleteHistorys) {
+            String managerName = userRepository.findById(userDeleteHistory.getRequester()).get().getUsername();
+            String username = userRepository.findById(userDeleteHistory.getUser().getId()).get().getUsername();
+            userDeleteHistoryDtos.add(new DeleteHistoryDto(managerName,username,userDeleteHistory.getTime()));
+        }
+        return userDeleteHistoryDtos;
     }
 
     /**

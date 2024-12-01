@@ -46,7 +46,12 @@ public class JWTUtil {
 //        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
         try {
             // JWT 파싱 및 만료 시간 확인
-            return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
+            return Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload()
+                    .getExpiration().before(new Date());
         } catch (ExpiredJwtException e) {
             // 토큰이 만료된 경우 true 반환
             return true;
