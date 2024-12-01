@@ -120,7 +120,7 @@ public class CaseService {
     /**
      * Update Case Status
      * @param caseId CaseId of the case to be edited
-     * @param caseStatus status
+     * @param requestDto status
      * @return String
      */
     public String updateCaseStatus(Long caseId, CaseStatusUpdateDto requestDto) {
@@ -172,10 +172,10 @@ public class CaseService {
     }
 
     private boolean containsKeywordInFields(Case c, String keyword) {
-        // 필드에 해당 키워드가 포함되어 있는지 검사
-        return (c.getProduct() != null && c.getProduct().contains(keyword)) ||
-                (c.getVersion() != null && c.getVersion().contains(keyword)) ||
-                (c.getProblemTitle() != null && c.getProblemTitle().contains(keyword)) ||
-                (c.getSeverity() != null && c.getSeverity().contains(keyword));
+        // 필드에 해당 키워드가 포함되어 있는지 검사(대소문자 관계 없이)
+        return (c.getProduct() != null && c.getProduct().toLowerCase().contains(keyword.toLowerCase())) ||
+                (c.getVersion() != null && c.getVersion().toLowerCase().contains(keyword.toLowerCase())) ||
+                (c.getProblemTitle() != null && c.getProblemTitle().toLowerCase().contains(keyword.toLowerCase())) ||
+                (c.getSeverity() != null && c.getSeverity().toLowerCase().contains(keyword.toLowerCase()));
     }
 }
