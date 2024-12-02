@@ -123,6 +123,11 @@ public class UserService {
             user.setAuthStatus(AuthStatus.AUTH_OK); //대시보드 권한 변경
             userRepository.save(user);
 
+            UserDeleteHistory userDeleteHistory = userDeleteHistoryRepository.findByUserUsername(username);
+            if(userDeleteHistory!=null){
+                userDeleteHistoryRepository.delete(userDeleteHistory);
+            }
+
             UserCreateHistory userCreateHistory = new UserCreateHistory();
             userCreateHistory.setRequester(managerId);
             userCreateHistory.setUser(user);
@@ -165,8 +170,8 @@ public class UserService {
 
 
             //user 정보 변경
-            user.setStatus(UserStatus.SUSPENDED);
-            user.setDeleteTime();
+            //user.setStatus(UserStatus.SUSPENDED);
+            //user.setDeleteTime();
             user.setAuthStatus(AuthStatus.NOT_AUTH);
             userRepository.save(user);
 
