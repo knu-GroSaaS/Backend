@@ -8,6 +8,8 @@ import com.grolabs.caselist.jwt.JWTUtil;
 import com.grolabs.caselist.repository.RefreshEntityRepository;
 import com.grolabs.caselist.service.ReissueService;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -36,6 +38,14 @@ public class ReissueController {
      * @param response The HTTP response to send the reissued tokens or error messages
      * @return ResponseEntity<?> A response entity indicating the success or failure of the operation
      */
+    @Operation(
+            summary = "토큰 갱신",
+            description = "Refresh토큰을 이용하여 토큰을 갱신한다.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "성공"),
+                    @ApiResponse(responseCode = "404", description = "토큰이 만료되거나 유효하지 않을 때")
+            }
+    )
     @PostMapping("api/auth/refresh")
     public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) throws IOException {
         return reissueService.reissue(request, response);
