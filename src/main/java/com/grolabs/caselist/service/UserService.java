@@ -165,8 +165,8 @@ public class UserService {
 
 
             //user 정보 변경
-            user.setStatus(UserStatus.SUSPENDED);
-            user.setDeleteTime();
+            //user.setStatus(UserStatus.SUSPENDED);
+            //user.setDeleteTime();
             user.setAuthStatus(AuthStatus.NOT_AUTH);
             userRepository.save(user);
 
