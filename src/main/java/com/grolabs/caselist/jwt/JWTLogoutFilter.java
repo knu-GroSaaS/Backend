@@ -1,8 +1,11 @@
 package com.grolabs.caselist.jwt;
 
 import com.grolabs.caselist.entity.LoginHistory;
+import com.grolabs.caselist.entity.User;
+import com.grolabs.caselist.entity.enums.UserStatus;
 import com.grolabs.caselist.repository.LoginHistoryRepository;
 import com.grolabs.caselist.repository.RefreshEntityRepository;
+import com.grolabs.caselist.repository.UserRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -24,10 +27,13 @@ public class JWTLogoutFilter extends GenericFilterBean {
 
     private final LoginHistoryRepository loginHistoryRepository;
 
-    public JWTLogoutFilter(JWTUtil jwtUtil, RefreshEntityRepository refreshEntityRepository, LoginHistoryRepository loginHistoryRepository) {
+    private final UserRepository userRepository;
+
+    public JWTLogoutFilter(JWTUtil jwtUtil, RefreshEntityRepository refreshEntityRepository, LoginHistoryRepository loginHistoryRepository, UserRepository userRepository) {
         this.jwtUtil = jwtUtil;
         this.refreshEntityRepository = refreshEntityRepository;
         this.loginHistoryRepository = loginHistoryRepository;
+        this.userRepository = userRepository;
     }
 
 
@@ -113,6 +119,12 @@ public class JWTLogoutFilter extends GenericFilterBean {
 
         loginHistoryRepository.save(loginHistory);
 
+
+        // User state수정
+        User user = userRepository.findByUsername(jwtUtil.getUsername(refresh));
+        user.setStatus(UserStatus.INACTIVE);
+
+        userRepository.save(user);
 //        //Refresh 토큰 Cookie 값 0
 //        Cookie cookie = new Cookie("refresh", null);
 //        cookie.setMaxAge(0);
