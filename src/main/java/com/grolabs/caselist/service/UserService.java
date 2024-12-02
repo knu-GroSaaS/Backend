@@ -120,7 +120,7 @@ public class UserService {
                 throw new NoSuchElementException(USER_NOT_FOUND);
             }
 
-            user.setAuthStatus(AuthStatus.AUTH_OK); //대시보드 권한 변경
+            user.setUsertype("ROLE_USER"); //대시보드 권한 변경
             userRepository.save(user);
 
             UserDeleteHistory userDeleteHistory = userDeleteHistoryRepository.findByUserUsername(username);
