@@ -141,7 +141,6 @@ public class UserService {
      * @param userDeleteDto A DTO containing the following fields:
      *                      - requestername
      *                      - username
-     *                      - deletion
      * @return String
      */
     public String UserDelete(UserDeleteDto userDeleteDto){
