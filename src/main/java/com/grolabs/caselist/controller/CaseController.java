@@ -70,8 +70,8 @@ public class CaseController {
             }
     )
     @GetMapping("/{caseId}")
-    public CaseGetDto getCase(@PathVariable Long caseId) {
-        return caseService.getCase(caseId);
+    public CaseGetDto getCase(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken,@PathVariable Long caseId) {
+        return caseService.getCase(accessToken,caseId);
     }
 
     /**
@@ -89,9 +89,10 @@ public class CaseController {
             }
     )
     @PutMapping("/{caseId}")
-    public String updateCase(@PathVariable Long caseId,
+    public String updateCase(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken,
+                             @PathVariable Long caseId,
                               @RequestBody CaseUpdateDto requestDto) {
-        return caseService.updateCase(requestDto, caseId);
+        return caseService.updateCase(accessToken,requestDto, caseId);
     }
 
     /**
@@ -109,9 +110,10 @@ public class CaseController {
             }
     )
     @PutMapping("/{caseId}/status")
-    public String updateCaseStatus(@PathVariable Long caseId,
+    public String updateCaseStatus(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken,
+                                   @PathVariable Long caseId,
                                    @RequestBody CaseStatusUpdateDto caseStatus) {
-        return caseService.updateCaseStatus(caseId, caseStatus);
+        return caseService.updateCaseStatus(accessToken,caseId, caseStatus);
     }
 
 
@@ -129,9 +131,9 @@ public class CaseController {
             }
     )
     @DeleteMapping("/{caseId}")
-    public String deleteCase(@PathVariable Long caseId) {
+    public String deleteCase(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken,@PathVariable Long caseId) {
 
-        return caseService.deleteCase(caseId);
+        return caseService.deleteCase(accessToken,caseId);
     }
 
     /**
@@ -148,7 +150,6 @@ public class CaseController {
     )
     @GetMapping("/search")
     public List<Case> searchCase(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken, @RequestParam String keyWord) {
-
         System.out.println(accessToken);
         return caseService.searchCase(accessToken, keyWord);
     }
