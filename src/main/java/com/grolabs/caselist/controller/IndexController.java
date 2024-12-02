@@ -154,6 +154,20 @@ public class IndexController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     *
+     * @param logoutDto A DTO containing the following fields:
+     *                  - refreshToken
+     * @return ResponseEntity<Void>
+     */
+    @Operation(
+            summary = "관리자 계정 생성",
+            description = "관리자 계정 생성",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "성공"),
+                    @ApiResponse(responseCode = "464", description = "refresh 토큰이 만료됐거나 잘못됐을 때")
+            }
+    )
     @PostMapping("/clogout")
     public ResponseEntity<Void> closeLogout(@RequestBody LogoutDto logoutDto){
         return joinService.closeLogout(logoutDto);
