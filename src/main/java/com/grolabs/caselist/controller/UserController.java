@@ -138,6 +138,14 @@ public class UserController {
      * @param accessToken in Header
      * @return List<LoginHistory>
      **/
+    @Operation(
+            summary = "로그인 기록",
+            description = "자신의 로그인 기록을 확인합니다.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "성공"),
+                    @ApiResponse(responseCode = "404", description = "해당 사용자가 존재하지 않을 때")
+            }
+    )
     @GetMapping("/user/loghistory")
     public List<LoginHistory> findHistory(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken){
         return userService.findHistory(accessToken);
@@ -148,6 +156,13 @@ public class UserController {
      *
      * @return List<LoginHistory>
      */
+    @Operation(
+            summary = "전체 로그인 기록",
+            description = "매니저 권한으로 모든 사용자 로그인 기록을 확인합니다.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "성공")
+            }
+    )
     @GetMapping("/manager/loghistory")
     public List<LoginHistory> findAllHistory(){
         return userService.findAllHistory();
