@@ -10,5 +10,4 @@ import lombok.NoArgsConstructor;
 public class UserDeleteDto {
     public String requestername;
     public String username;
-    public String deletion;
 }

@@ -13,5 +13,5 @@ import java.sql.Timestamp;
 public class DeleteHistoryDto {
     public String requestername;
     public String username;
-    public Timestamp DeletedAt;
+    public Timestamp deletedAt;
 }
