@@ -173,6 +173,13 @@ public class UserController {
      *
      * @return List<CreateHistoryDto>
      */
+    @Operation(
+            summary = "계정 생성 기록",
+            description = "모든 사용자의 생성 기록을 확인합니다.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "성공")
+            }
+    )
     @GetMapping("/manager/createhis")
     public List<CreateHistoryDto> findAllCreateHistory(){
         return userService.findAllCreateHistory();
@@ -183,6 +190,13 @@ public class UserController {
      *
      * @return List<DeleteHistoryDto>
      */
+    @Operation(
+            summary = "계정 삭제 기록",
+            description = "모든 사용자의 삭제 기록을 확인합니다.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "성공")
+            }
+    )
     @GetMapping("/manager/deletehis")
     public List<DeleteHistoryDto> findAllDeleteHistory(){
         return userService.findAllDeleteHistory();
@@ -194,6 +208,13 @@ public class UserController {
      *
      * @return List<User>
      */
+    @Operation(
+            summary = "비인가 계정 확인",
+            description = "인가되지 않은 모든 사용자 목록을 확인합니다.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "성공")
+            }
+    )
     @GetMapping("/manager/auth")
     public List<User> unAuthUser() {
         return userService.unAuthUser();
@@ -205,6 +226,14 @@ public class UserController {
      * @param userId userId of User to be modified
      * @return ResponseEntity<String>
      */
+    @Operation(
+            summary = "인가 작업",
+            description = "인가되지 않은 사용자 계정을 인가시켜줍니다.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "성공"),
+                    @ApiResponse(responseCode = "404", description = "해당 유저를 찾을 수 없습니다.")
+            }
+    )
     @PostMapping("/manager/auth/{userId}")
     public ResponseEntity<String> modifyUnAuthUser(@PathVariable Long userId){
 
