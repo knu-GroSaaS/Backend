@@ -198,6 +198,9 @@ public class UserService {
         String username = jwtUtil.getUsername(token);
 
         User user = userRepository.findByUsername(username);
+        if (user == null){
+            throw new NoSuchElementException("해당 유저가 존재하지 않습니다.");
+        }
 
         return loginHistoryRepository.findAllByUserId(user.getId());
     }
