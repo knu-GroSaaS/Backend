@@ -6,6 +6,7 @@ import com.grolabs.caselist.dto.user.CustomUserDetails;
 import com.grolabs.caselist.entity.LoginHistory;
 import com.grolabs.caselist.entity.RefreshEntity;
 import com.grolabs.caselist.entity.User;
+import com.grolabs.caselist.entity.enums.UserStatus;
 import com.grolabs.caselist.exception.costom.PasswordException;
 import com.grolabs.caselist.repository.LoginHistoryRepository;
 import com.grolabs.caselist.repository.RefreshEntityRepository;
@@ -103,6 +104,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonResponse = objectMapper.writeValueAsString(responseMap);
 
+        // User State설정
+        user.setStatus(UserStatus.ACTIVE);
+        userRepository.save(user);
 
         // 응답 스트림에 JSON 작성
         response.getWriter().write(jsonResponse);
