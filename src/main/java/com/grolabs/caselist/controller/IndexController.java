@@ -6,6 +6,8 @@ import com.grolabs.caselist.entity.User;
 import com.grolabs.caselist.entity.enums.UserStatus;
 import com.grolabs.caselist.repository.UserRepository;
 import com.grolabs.caselist.service.JoinService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,14 @@ public class IndexController {
      * @param value value
      * @return ResponseEntity<Boolean> A response containing a success message
      * **/
+    @Operation(
+            summary = "중복 확인",
+            description = "사용자 이름이나 email의 중복을 확인한다.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "성공"),
+                    @ApiResponse(responseCode = "404", description = "value의 값이 null일때")
+            }
+    )
     @PostMapping("/join/dupli")
     public ResponseEntity<Boolean> checkDuplicate(
             @RequestParam String type,//username or email
@@ -53,6 +63,14 @@ public class IndexController {
      *                - site
      * @return ResponseEntity<Void>
      */
+    @Operation(
+            summary = "회원 가입",
+            description = "회원 가입",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "성공"),
+                    @ApiResponse(responseCode = "463", description = "아이디 및 이메일 중복")
+            }
+    )
     @PostMapping("/join")
     public ResponseEntity<Void> join(JoinDto joinDto) throws CloneNotSupportedException {
         joinService.joinUser(joinDto);
@@ -68,6 +86,13 @@ public class IndexController {
      * @return String
      *     - A message indicating whether the password request was successful or failed
      */
+    @Operation(
+            summary = "비밀번호 재설정",
+            description = "비밀번호 재설정, 이메일을 전송해준다.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "성공")
+            }
+    )
     @PostMapping("/password")
     public String requestPassword(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken){
         return joinService.requestPassword(accessToken);
@@ -85,6 +110,15 @@ public class IndexController {
      *     - success updatePassword -> ok code
      *     - fail updatePassword -> bad code
      */
+    @Operation(
+            summary = "비밀번호 변경",
+            description = "비밀번호 변경",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "성공"),
+                    @ApiResponse(responseCode = "404", description = "사용자가 존재하지 않을 때"),
+                    @ApiResponse(responseCode = "464", description = "토큰이 맞지 않거나, 기존 비밀번호 틀렸을 때")
+            }
+    )
     @PutMapping("/password/update")
     public ResponseEntity<Void> updatePassword(@RequestParam String token, PasswordEditDto passwordEditDto) {
         if(joinService.updatePassword(token, passwordEditDto)) {
@@ -105,6 +139,14 @@ public class IndexController {
      *                - site
      * @return ResponseEntity<Void>
      */
+    @Operation(
+            summary = "관리자 계정 생성",
+            description = "관리자 계정 생성",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "성공"),
+                    @ApiResponse(responseCode = "404", description = "이메일이나 아이디가 중복됐을 때")
+            }
+    )
     @PostMapping("/adminjoin")
     public ResponseEntity<Void> joinAdmin(JoinDto joinDto) {
         joinService.managerJoin(joinDto);
