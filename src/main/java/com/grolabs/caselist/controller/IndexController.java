@@ -1,6 +1,7 @@
 package com.grolabs.caselist.controller;
 
 import com.grolabs.caselist.dto.JoinDto;
+import com.grolabs.caselist.dto.Logout.LogoutDto;
 import com.grolabs.caselist.dto.PasswordEditDto;
 import com.grolabs.caselist.entity.User;
 import com.grolabs.caselist.entity.enums.UserStatus;
@@ -151,6 +152,11 @@ public class IndexController {
     public ResponseEntity<Void> joinAdmin(JoinDto joinDto) {
         joinService.managerJoin(joinDto);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/clogout")
+    public ResponseEntity<Void> closeLogout(@RequestBody LogoutDto logoutDto){
+        return joinService.closeLogout(logoutDto);
     }
 
 }
