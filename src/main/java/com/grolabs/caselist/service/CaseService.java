@@ -32,6 +32,7 @@ public class CaseService {
     public final JWTUtil jwtUtil;
 
     public static final String BOARD_NOT_FOUND = "글을 찾을 수 없습니다.";
+    public static final String USER_NOT_FOUND = "유저를 찾을 수 없습니다.";
 
     /**
      * Create Case
@@ -43,6 +44,9 @@ public class CaseService {
         String username = jwtUtil.getUsername(token);
 
         User user = userRepository.findByUsername(username);
+        if(user==null){
+            throw new NoSuchElementException(USER_NOT_FOUND);
+        }
 
         Case aCase = new Case(requestDto, user);
 
@@ -62,6 +66,9 @@ public class CaseService {
         String username = jwtUtil.getUsername(token);
 
         User user = userRepository.findByUsername(username);
+        if(user==null){
+            throw new NoSuchElementException(USER_NOT_FOUND);
+        }
 
         List<Case> AllCases = caseRepository.findAllByUserId(user.getId());
 
@@ -77,7 +84,13 @@ public class CaseService {
      * @param caseId CaseId of the case to be found
      * @return CaseGetDto
      */
-    public CaseGetDto getCase(Long caseId) {
+    public CaseGetDto getCase(String accessToken, Long caseId) {
+        String token = accessToken.split(" ")[1];
+        String username = jwtUtil.getUsername(token);
+        if(username==null){
+            throw new NoSuchElementException(USER_NOT_FOUND);
+        }
+
         Case currentcase= caseRepository.findById(caseId)
                 .orElseThrow(() -> new NoSuchElementException(BOARD_NOT_FOUND));
         return new CaseGetDto(currentcase, currentcase.getUser());
@@ -89,7 +102,13 @@ public class CaseService {
      * @param caseId CaseId of the case to be edited
      * @return String
      */
-    public String updateCase(CaseUpdateDto requestDto, Long caseId) {
+    public String updateCase(String accessToken, CaseUpdateDto requestDto, Long caseId) {
+        String token = accessToken.split(" ")[1];
+        String username = jwtUtil.getUsername(token);
+        if(username==null){
+            throw new NoSuchElementException(USER_NOT_FOUND);
+        }
+
         Case currentCase = caseRepository.findById(caseId)
                 .orElseThrow(() -> new NoSuchElementException(BOARD_NOT_FOUND));
 
@@ -123,7 +142,13 @@ public class CaseService {
      * @param requestDto status
      * @return String
      */
-    public String updateCaseStatus(Long caseId, CaseStatusUpdateDto requestDto) {
+    public String updateCaseStatus(String accessToken, Long caseId, CaseStatusUpdateDto requestDto) {
+        String token = accessToken.split(" ")[1];
+        String username = jwtUtil.getUsername(token);
+        if(username==null){
+            throw new NoSuchElementException(USER_NOT_FOUND);
+        }
+
         Case currentCase = caseRepository.findById(caseId)
                 .orElseThrow(() -> new NoSuchElementException(BOARD_NOT_FOUND));
 
@@ -142,7 +167,14 @@ public class CaseService {
      * @param caseId CaseId of the case to be deleted
      * @return String
      */
-    public String deleteCase(Long caseId) {
+    public String deleteCase(String accessToken, Long caseId) {
+
+        String token = accessToken.split(" ")[1];
+        String username = jwtUtil.getUsername(token);
+        if(username==null){
+            throw new NoSuchElementException(USER_NOT_FOUND);
+        }
+
         Case currentCase = caseRepository.findById(caseId)
                 .orElseThrow(() -> new NoSuchElementException(BOARD_NOT_FOUND));
 
