@@ -177,8 +177,8 @@ public class JoinService {
         }
     }
 
-    public ResponseEntity<Void> closeLogout(LogoutDto logoutDto) {
-        String refresh = logoutDto.getRefreshToken();
+    public ResponseEntity<Void> closeLogout(String refresh) {
+
 
         if (refresh == null) {
             throw new IllegalArgumentException("토큰이 비어있습니다.");

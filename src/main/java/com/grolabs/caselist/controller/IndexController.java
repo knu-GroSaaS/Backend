@@ -1,5 +1,6 @@
 package com.grolabs.caselist.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.grolabs.caselist.dto.JoinDto;
 import com.grolabs.caselist.dto.Logout.LogoutDto;
 import com.grolabs.caselist.dto.PasswordEditDto;
@@ -9,6 +10,8 @@ import com.grolabs.caselist.repository.UserRepository;
 import com.grolabs.caselist.service.JoinService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +22,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -154,9 +159,57 @@ public class IndexController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/clogout")
-    public ResponseEntity<Void> closeLogout(@RequestBody LogoutDto logoutDto){
-        return joinService.closeLogout(logoutDto);
+    /**
+     *
+     * @param logoutDto A DTO containing the following fields:
+     *                  - refreshToken
+     * @return ResponseEntity<Void>
+     */
+    @Operation(
+            summary = "관리자 계정 생성",
+            description = "관리자 계정 생성",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "성공"),
+                    @ApiResponse(responseCode = "464", description = "refresh 토큰이 만료됐거나 잘못됐을 때")
+            }
+    )
+    @PostMapping(value = "/clogout", consumes = {"text/plain", "text/plain;charset=UTF-8"})
+    public ResponseEntity<Void> closeLogout(HttpServletRequest request){
+
+        StringBuilder data = new StringBuilder();
+        try (BufferedReader reader = request.getReader()) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                data.append(line);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            // StringBuilder를 String으로 변환 후 "Received data: " 제거
+            String rawData = data.toString();
+            if (rawData.startsWith("Received data: ")) {
+                rawData = rawData.substring("Received data: ".length());
+            }
+
+            // JSON 파싱
+            ObjectMapper objectMapper = new ObjectMapper();
+            Map<String, Object> map = objectMapper.readValue(rawData, Map.class);
+
+            // refreshToken 추출
+            String refreshToken = (String) map.get("refreshToken");
+            System.out.println("Extracted refreshToken: " + refreshToken);
+
+            // 여기에서 refreshToken을 사용해 로직 처리 가능
+            // 예: joinService.closeLogout(refreshToken);
+
+            return joinService.closeLogout(refreshToken);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(400).build(); // 잘못된 요청 반환
+        }
+
     }
 
 }
