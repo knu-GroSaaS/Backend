@@ -1,24 +1,18 @@
 package com.grolabs.caselist.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.grolabs.caselist.auth.PrincipalDetails;
-import com.grolabs.caselist.dto.user.CustomUserDetails;
 import com.grolabs.caselist.entity.LoginHistory;
 import com.grolabs.caselist.entity.RefreshEntity;
 import com.grolabs.caselist.entity.User;
 import com.grolabs.caselist.entity.enums.UserStatus;
-import com.grolabs.caselist.exception.costom.PasswordException;
 import com.grolabs.caselist.repository.LoginHistoryRepository;
 import com.grolabs.caselist.repository.RefreshEntityRepository;
 import com.grolabs.caselist.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cglib.core.Local;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,9 +21,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
-import java.security.Timestamp;
 import java.time.Duration;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
 

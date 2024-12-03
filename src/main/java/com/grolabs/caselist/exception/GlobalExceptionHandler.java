@@ -1,6 +1,6 @@
 package com.grolabs.caselist.exception;
 
-import com.grolabs.caselist.exception.costom.PasswordException;
+import com.grolabs.caselist.exception.custom.PasswordException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

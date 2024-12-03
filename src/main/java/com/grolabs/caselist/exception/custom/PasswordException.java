@@ -1,4 +1,4 @@
-package com.grolabs.caselist.exception.costom;
+package com.grolabs.caselist.exception.custom;
 
 public class PasswordException extends RuntimeException{
 
