@@ -119,14 +119,14 @@ public class UserController {
      * */
     @Operation(
             summary = "유저 삭제",
-            description = "특정 유저 삭제한다.",
+            description = "특정 유저를 삭제한다.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "성공"),
                     @ApiResponse(responseCode = "464", description = "해당 사용자는 매니저 권한이 아닙니다."),
                     @ApiResponse(responseCode = "404", description = "해당하는 유저 및 매니저는 존재하지 않습니다.")
             }
     )
-    @DeleteMapping("/manager/authdelete")
+    @PostMapping("/manager/authdelete")
     public ResponseEntity<String> deleteUser(@RequestBody UserDeleteDto userDeleteDto){
         return ResponseEntity.ok(userService.UserDelete(userDeleteDto));
     }
