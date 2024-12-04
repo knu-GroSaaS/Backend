@@ -108,22 +108,31 @@ public class JoinService {
     }
 
     /**
-     * Updates the User's password after validating the reset token and input details.
+     * validating the reset token and input details
      *
      * @param token A password reset token to validate the user's identity.
+     *
+     * @return boolean
+     */
+    public boolean validateToken(String token) {
+        String email = tokenService.validateToken(token);
+        if (email == null) {
+            return false;
+        }
+        tokenService.invalidateToken(token);
+        return true;
+    }
+
+    /**
+     * Updates the User's password
+     *
      * @param passwordEditDto A DTO containing the following fields:
      *                        - username
      *                        - currentPassword
      *                        - newPassword
      * @return boolean
      */
-    public boolean updatePassword(String token, PasswordEditDto passwordEditDto) {
-
-        String email = tokenService.validateToken(token);
-
-        if (email == null) {
-            throw new IllegalArgumentException("인증코드가 유효하지 않습니다.");
-        }
+    public boolean updatePassword(PasswordEditDto passwordEditDto) {
 
         User user=userRepository.findByUsername(passwordEditDto.getUsername());
         if(user==null) {
@@ -138,7 +147,6 @@ public class JoinService {
             user.setPassword(passwordEncoder.encode(passwordEditDto.getNewPassword()));
             user.setPasswordUpdateTime(LocalDateTime.now());
             userRepository.save(user);
-            tokenService.invalidateToken(token);
             System.out.println("성공");
             return true;
         }

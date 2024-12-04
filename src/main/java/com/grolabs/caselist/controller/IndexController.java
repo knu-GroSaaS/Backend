@@ -93,8 +93,8 @@ public class IndexController {
      *     - A message indicating whether the password request was successful or failed
      */
     @Operation(
-            summary = "비밀번호 재설정",
-            description = "비밀번호 재설정, 이메일을 전송해준다.",
+            summary = "비밀번호 재설정 이메일 발송",
+            description = "비밀번호 재설정을 위한 인증토큰 이메일을 전송해준다.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "성공")
             }
@@ -107,7 +107,6 @@ public class IndexController {
     /**
      *update password api
      *
-     * @param token email
      * @param passwordEditDto A DTO containing the following fields:
      *                        - username
      *                        - currentPassword
@@ -126,13 +125,32 @@ public class IndexController {
             }
     )
     @PutMapping("/password/update")
-    public ResponseEntity<Void> updatePassword(@RequestParam String token, PasswordEditDto passwordEditDto) {
-        if(joinService.updatePassword(token, passwordEditDto)) {
+    public ResponseEntity<Void> updatePassword(PasswordEditDto passwordEditDto) {
+        if(joinService.updatePassword(passwordEditDto)) {
             return ResponseEntity.ok().build();
         }
         else{
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    /**
+     * validate email token
+     *
+     * @param token validate token
+     * @return
+     */
+    @Operation(
+            summary = "이메일 인증 토큰 검증",
+            description = "이메일로 발송된 토큰을 검증합니다.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "토큰 검증 성공 또는 실패")
+            }
+    )
+    @PostMapping("/password/tokenval")
+    public ResponseEntity<Boolean> validatePassword(@RequestParam String token){
+        boolean validate = joinService.validateToken(token);
+        return ResponseEntity.ok(validate);
     }
 
     /**
