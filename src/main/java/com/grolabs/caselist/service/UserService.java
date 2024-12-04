@@ -67,7 +67,7 @@ public class UserService {
     public void updateUserAuthority(UserAuthorityDto userAuthorityDto){
         User manager = userRepository.findByUsername(userAuthorityDto.getManagerName());
 
-        if(manager.getUsertype().equals("MANAGER")){
+        if(manager.getUserType().equals("MANAGER")){
             User user = userRepository.findByUsername(userAuthorityDto.getUserName());
             user.updateType(userAuthorityDto.getUserType());
         }
@@ -119,7 +119,7 @@ public class UserService {
             throw new NoSuchElementException(USER_NOT_FOUND);
         }
 
-        user.setUsertype("ROLE_USER"); //대시보드 권한 변경
+        user.setUserType("ROLE_USER"); //대시보드 권한 변경
         userRepository.save(user);
 
         UserDeleteHistory userDeleteHistory = userDeleteHistoryRepository.findByUserUsername(username);
@@ -167,7 +167,7 @@ public class UserService {
         //user 정보 변경
         //user.setStatus(UserStatus.SUSPENDED);
         //user.setDeleteTime();
-        user.setUsertype(null);
+        user.setUserType(null);
         userRepository.save(user);
 
         //사용자 삭제 테이블에 추가

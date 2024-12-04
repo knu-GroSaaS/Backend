@@ -27,7 +27,7 @@ public class CustomUserDetails  implements UserDetails {
             @Override
             public String getAuthority() {
 
-                return user.getUsertype();
+                return user.getUserType();
             }
         });
         return collection;
