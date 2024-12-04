@@ -30,7 +30,7 @@ public class PrincipalDetails implements UserDetails {
         collect.add(new GrantedAuthority() {
             @Override
             public String getAuthority() {
-                return user.getUsertype();
+                return user.getUserType();
             }
         });
         return collect;

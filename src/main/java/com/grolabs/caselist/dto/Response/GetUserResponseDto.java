@@ -43,7 +43,7 @@ public class GetUserResponseDto {
         this.username = user.getUsername();
         this.email = user.getEmail();
         this.phoneNum = user.getPhoneNum();
-        this.userType = user.getUsertype();
+        this.userType = user.getUserType();
         this.site = user.getSite();
         this.status = user.getStatus();
         this.createTime = user.getCreateTime();
