@@ -52,7 +52,7 @@ public class UserService {
 
     public static final String MANAGER_NOT_FOUND = "매니저를 찾을 수 없습니다.";
     public static final String USER_NOT_FOUND = "유저를 찾을 수 없습니다.";
-    public static final String EMAIL_SUBJECT = "GROCASS 권한 변경";
+    public static final String EMAIL_SUBJECT = "GroSaaS 권한 변경";
     public static final String EMAIL_TEXT = "권한이 삭제되었습니다.";
 
 
@@ -167,7 +167,7 @@ public class UserService {
         //user 정보 변경
         //user.setStatus(UserStatus.SUSPENDED);
         //user.setDeleteTime();
-        user.setAuthStatus(AuthStatus.NOT_AUTH);
+        user.setUsertype(null);
         userRepository.save(user);
 
         //사용자 삭제 테이블에 추가
