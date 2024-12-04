@@ -33,7 +33,7 @@ public class User {
     private String phoneNum;
 
     @Column
-    private String usertype;
+    private String userType;
 
     @Column
     private String site;
@@ -76,7 +76,7 @@ public class User {
 
 
     public void updateType(String Type){
-        this.usertype = Type;
+        this.userType = Type;
     }
 
 
