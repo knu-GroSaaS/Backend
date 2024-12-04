@@ -109,35 +109,31 @@ public class UserService {
         if(manager==null){
             throw new NoSuchElementException(MANAGER_NOT_FOUND);
         }
-        if(manager.getUsertype().equals("ROLE_MANAGER")){
-            Long managerId = manager.getId();
-            String username = userAddDto.getUsername();
-            if (managerId == null || username == null) {
-                throw new IllegalArgumentException("항목을 모두 작성해 주세요");
-            }
-            User user = userRepository.findByUsername(username);
-            if(user==null){
-                throw new NoSuchElementException(USER_NOT_FOUND);
-            }
-
-            user.setUsertype("ROLE_USER"); //대시보드 권한 변경
-            userRepository.save(user);
-
-            UserDeleteHistory userDeleteHistory = userDeleteHistoryRepository.findByUserUsername(username);
-            if(userDeleteHistory!=null){
-                userDeleteHistoryRepository.delete(userDeleteHistory);
-            }
-
-            UserCreateHistory userCreateHistory = new UserCreateHistory();
-            userCreateHistory.setRequester(managerId);
-            userCreateHistory.setUser(user);
-            userCreateHistoryRepository.save(userCreateHistory);
-
-            return "추가 되었습니다.";
+        Long managerId = manager.getId();
+        String username = userAddDto.getUsername();
+        if (managerId == null || username == null) {
+            throw new IllegalArgumentException("항목을 모두 작성해 주세요");
         }
-        else{
-            return "매니저 권한이 아닙니다.";
+        User user = userRepository.findByUsername(username);
+        if(user==null){
+            throw new NoSuchElementException(USER_NOT_FOUND);
         }
+
+        user.setUsertype("ROLE_USER"); //대시보드 권한 변경
+        userRepository.save(user);
+
+        UserDeleteHistory userDeleteHistory = userDeleteHistoryRepository.findByUserUsername(username);
+        if(userDeleteHistory!=null){
+            userDeleteHistoryRepository.delete(userDeleteHistory);
+        }
+
+        UserCreateHistory userCreateHistory = new UserCreateHistory();
+        userCreateHistory.setRequester(managerId);
+        userCreateHistory.setUser(user);
+        userCreateHistoryRepository.save(userCreateHistory);
+
+        return "추가 되었습니다.";
+
     }
 
     /**
@@ -154,41 +150,36 @@ public class UserService {
             throw new NoSuchElementException(MANAGER_NOT_FOUND);
         }
 
-        if(manager.getUsertype().equals("ROLE_MANAGER")){
-            User user = userRepository.findByUsername(userDeleteDto.getUsername());
-            if(user==null){
-                throw new NoSuchElementException(USER_NOT_FOUND);
-            }
-
-            //사용자 생성테이블에서 삭제
-            UserCreateHistory userCreateHistory = userCreateHistoryRepository.findByUserUsername(user.getUsername());
-            if(userCreateHistory==null){
-                throw new NoSuchElementException(USER_NOT_FOUND);
-            }
-            // 삭제 작업 수행
-            userCreateHistoryRepository.delete(userCreateHistory);
-
-
-            //user 정보 변경
-            //user.setStatus(UserStatus.SUSPENDED);
-            //user.setDeleteTime();
-            user.setAuthStatus(AuthStatus.NOT_AUTH);
-            userRepository.save(user);
-
-            //사용자 삭제 테이블에 추가
-            UserDeleteHistory userDeleteHistory = new UserDeleteHistory();
-            userDeleteHistory.setRequester(manager.getId());
-            userDeleteHistory.setUser(user);
-            userDeleteHistoryRepository.save(userDeleteHistory);
-
-            //email발송
-            emailService.sendEmail(user.getEmail(),EMAIL_SUBJECT,EMAIL_TEXT);
-
-            return "삭제 되었습니다.";
+        User user = userRepository.findByUsername(userDeleteDto.getUsername());
+        if(user==null){
+            throw new NoSuchElementException(USER_NOT_FOUND);
         }
-        else{
-            throw new IllegalArgumentException("매니저 권한이 아닙니다.");
+
+        //사용자 생성테이블에서 삭제
+        UserCreateHistory userCreateHistory = userCreateHistoryRepository.findByUserUsername(user.getUsername());
+        if(userCreateHistory==null){
+            throw new NoSuchElementException(USER_NOT_FOUND);
         }
+        // 삭제 작업 수행
+        userCreateHistoryRepository.delete(userCreateHistory);
+
+
+        //user 정보 변경
+        //user.setStatus(UserStatus.SUSPENDED);
+        //user.setDeleteTime();
+        user.setAuthStatus(AuthStatus.NOT_AUTH);
+        userRepository.save(user);
+
+        //사용자 삭제 테이블에 추가
+        UserDeleteHistory userDeleteHistory = new UserDeleteHistory();
+        userDeleteHistory.setRequester(manager.getId());
+        userDeleteHistory.setUser(user);
+        userDeleteHistoryRepository.save(userDeleteHistory);
+
+        //email발송
+        emailService.sendEmail(user.getEmail(),EMAIL_SUBJECT,EMAIL_TEXT);
+
+        return "삭제 되었습니다.";
     }
 
     /**
