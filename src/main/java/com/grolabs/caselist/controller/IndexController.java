@@ -125,8 +125,8 @@ public class IndexController {
             }
     )
     @PutMapping("/password/update")
-    public ResponseEntity<Void> updatePassword(PasswordEditDto passwordEditDto) {
-        if(joinService.updatePassword(passwordEditDto)) {
+    public ResponseEntity<Void> updatePassword(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken,PasswordEditDto passwordEditDto) {
+        if(joinService.updatePassword(accessToken, passwordEditDto)) {
             return ResponseEntity.ok().build();
         }
         else{
@@ -148,8 +148,8 @@ public class IndexController {
             }
     )
     @PostMapping("/password/tokenval")
-    public ResponseEntity<Boolean> validatePassword(@RequestParam String token){
-        boolean validate = joinService.validateToken(token);
+    public ResponseEntity<Boolean> validatePassword(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken, @RequestParam String token){
+        boolean validate = joinService.validateToken(accessToken,token);
         return ResponseEntity.ok(validate);
     }
 
