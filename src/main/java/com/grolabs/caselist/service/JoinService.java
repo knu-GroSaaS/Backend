@@ -114,7 +114,11 @@ public class JoinService {
      *
      * @return boolean
      */
-    public boolean validateToken(String token) {
+    public boolean validateToken(String accessToken, String token) {
+        String usertoken = accessToken.split(" ")[1];
+
+        jwtUtil.getUsername(usertoken);
+
         String email = tokenService.validateToken(token);
         if (email == null) {
             return false;
@@ -132,7 +136,11 @@ public class JoinService {
      *                        - newPassword
      * @return boolean
      */
-    public boolean updatePassword(PasswordEditDto passwordEditDto) {
+    public boolean updatePassword(String accessToken, PasswordEditDto passwordEditDto) {
+
+        String usertoken = accessToken.split(" ")[1];
+
+        jwtUtil.getUsername(usertoken);
 
         User user=userRepository.findByUsername(passwordEditDto.getUsername());
         if(user==null) {
@@ -174,7 +182,7 @@ public class JoinService {
         user.setSite(joinDto.getSite());
         user.setStatus(UserStatus.INACTIVE);
         user.setPasswordUpdateTime(LocalDateTime.now());
-        user.setUserType("ROLE_MANAGER");
+        user.setUsertype("ROLE_ADMIN");
         user.setAuthStatus(AuthStatus.AUTH_OK);
 
         if(userRepository.existsByUsername(joinDto.getUsername())){
