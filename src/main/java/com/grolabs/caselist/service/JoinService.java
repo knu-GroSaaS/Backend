@@ -182,7 +182,7 @@ public class JoinService {
         user.setSite(joinDto.getSite());
         user.setStatus(UserStatus.INACTIVE);
         user.setPasswordUpdateTime(LocalDateTime.now());
-        user.setUsertype("ROLE_ADMIN");
+        user.setUserType("ROLE_ADMIN");
         user.setAuthStatus(AuthStatus.AUTH_OK);
 
         if(userRepository.existsByUsername(joinDto.getUsername())){
